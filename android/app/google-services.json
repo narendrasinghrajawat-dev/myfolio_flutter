@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "232395100504",
+    "project_id": "myfolio-2e036",
+    "storage_bucket": "myfolio-2e036.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232395100504:android:e61d811697f58ee4aad52d",
+        "android_client_info": {
+          "package_name": "com.myfolio.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsVf4fM8San6KNK0SVx7Vftjx_4HFoaYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
