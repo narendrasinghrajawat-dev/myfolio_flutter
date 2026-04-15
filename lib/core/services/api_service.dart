@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
+import '../constants/app_constants.dart';
 
 enum Environment {
   development,
@@ -28,90 +29,161 @@ class AppConfig {
 
 class ApiService {
   final Dio _dio;
-  
-  ApiService(this._dio) : super();
 
-  // Generic GET request
-  Future<Map<String, dynamic>> get(String endpoint, {Map<String, dynamic>? queryParameters}) async {
+  ApiService(this._dio);
+
+  // GET request
+  Future<Map<String, dynamic>> get(String endpoint, {Map<String, String>? queryParameters}) async {
     try {
-      final response = await _dio.get(endpoint, queryParameters: queryParameters);
-      return response.data;
+      final response = await _dio.get('${AppConstants.apiBaseUrl}$endpoint', queryParameters: queryParameters);
+      
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
     } catch (e) {
-      throw _handleError(e);
+      throw Exception('Network error: ${e.toString()}');
     }
   }
 
-  // Generic POST request
-  Future<Map<String, dynamic>> post(String endpoint, {dynamic data}) async {
+  // POST request
+  Future<Map<String, dynamic>> post(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.post(endpoint, data: data);
-      return response.data;
+      final response = await _dio.post('${AppConstants.apiBaseUrl}$endpoint', data: data);
+      
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data;
+      } else {
+        throw Exception('Failed to create data: ${response.statusCode}');
+      }
     } catch (e) {
-      throw _handleError(e);
+      throw Exception('Network error: ${e.toString()}');
     }
   }
 
-  // Generic PUT request
-  Future<Map<String, dynamic>> put(String endpoint, {dynamic data}) async {
+  // PUT request
+  Future<Map<String, dynamic>> put(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.put(endpoint, data: data);
-      return response.data;
+      final response = await _dio.put('${AppConstants.apiBaseUrl}$endpoint', data: data);
+      
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('Failed to update data: ${response.statusCode}');
+      }
     } catch (e) {
-      throw _handleError(e);
+      throw Exception('Network error: ${e.toString()}');
     }
   }
 
-  // Generic DELETE request
+  // DELETE request
   Future<Map<String, dynamic>> delete(String endpoint) async {
     try {
-      final response = await _dio.delete(endpoint);
-      return response.data;
+      final response = await _dio.delete('${AppConstants.apiBaseUrl}$endpoint');
+      
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return response.data;
+      } else {
+        throw Exception('Failed to delete data: ${response.statusCode}');
+      }
     } catch (e) {
-      throw _handleError(e);
+      throw Exception('Network error: ${e.toString()}');
     }
   }
 
-  // File upload
-  Future<Map<String, dynamic>> uploadFile(String endpoint, String filePath, {String? fieldName}) async {
+  // Upload file
+  Future<String> uploadFile(String endpoint, String filePath) async {
     try {
-      final file = MultipartFile.fromFile(
-        filePath,
-        filename: filePath.split('/').last,
-      );
-      
+      final file = await MultipartFile.fromFile(filePath);
       final formData = FormData.fromMap({
-        fieldName ?? 'file': file,
+        'file': file,
       });
       
-      final response = await _dio.post(endpoint, data: formData);
-      return response.data;
+      final response = await _dio.post('${AppConstants.apiBaseUrl}$endpoint', data: formData);
+      
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data['fileUrl'];
+      } else {
+        throw Exception('Failed to upload file: ${response.statusCode}');
+      }
     } catch (e) {
-      throw _handleError(e);
+      throw Exception('Network error: ${e.toString()}');
     }
   }
 
-  // Error handling
-  Exception _handleError(dynamic error) {
-    if (error is DioException) {
-      final dioError = error as DioException;
+  // Download file
+  Future<void> downloadFile(String url, String savePath) async {
+    try {
+      final response = await _dio.download(url, savePath);
       
-      switch (dioError.type) {
-        case DioExceptionType.connectionTimeout:
-          return Exception('Connection timeout. Please check your internet connection.');
-        case DioExceptionType.receiveTimeout:
-          return Exception('Request timeout. Please try again.');
-        case DioExceptionType.badResponse:
-          return Exception('Server error: ${dioError.message}');
-        case DioExceptionType.cancel:
-          return Exception('Request was cancelled.');
-        case DioExceptionType.unknown:
-          return Exception('Unknown error occurred: ${dioError.message}');
-        default:
-          return Exception('Network error: ${dioError.message}');
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to download file: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Network error: ${e.toString()}');
+    }
+  }
+
+  // Check connectivity
+  Future<bool> isConnected() async {
+    try {
+      final response = await _dio.get('${AppConstants.apiBaseUrl}/health');
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Set authentication token
+  void setAuthToken(String token) {
+    _dio.options.headers['Authorization'] = 'Bearer $token';
+  }
+
+  // Clear authentication token
+  void clearAuthToken() {
+    _dio.options.headers.remove('Authorization');
+  }
+
+  // Handle API errors
+  String getErrorMessage(int statusCode, dynamic errorData) {
+    switch (statusCode) {
+      case 400:
+        return 'Bad request: ${errorData['message'] ?? 'Invalid data'}';
+      case 401:
+        return 'Unauthorized: Please login again';
+      case 403:
+        return 'Forbidden: You don\'t have permission';
+      case 404:
+        return 'Not found: The requested resource was not found';
+      case 500:
+        return 'Server error: Please try again later';
+      default:
+        return 'Something went wrong: Please try again';
+    }
+  }
+
+  // Retry mechanism
+  Future<T> retryOperation<T>(
+    Future<T> Function() operation,
+    int maxRetries = 3,
+    Duration delay = const Duration(seconds: 1),
+  ) async {
+    for (int i = 0; i < maxRetries; i++) {
+      try {
+        return await operation();
+      } catch (e) {
+        if (i == maxRetries - 1) {
+          rethrow;
+        } else {
+          await Future.delayed(delay);
+        }
       }
     }
     
-    return Exception('An unexpected error occurred: $error');
+    throw Exception('Operation failed after $maxRetries retries');
   }
 }
 

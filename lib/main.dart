@@ -5,18 +5,17 @@ import 'package:go_router/go_router.dart';
 
 import 'core/services/api_service.dart';
 import 'core/themes/app_theme.dart';
-import 'auth/auth_notifier.dart';
-import 'auth/login_screen.dart';
-import 'auth/register_screen.dart';
-import 'projects/project_notifier.dart';
-import 'projects/project_list_screen.dart';
-import 'projects/add_project_screen.dart';
-import 'skills/skill_notifier.dart';
-import 'skills/skills_screen.dart';
-import 'education/education_notifier.dart';
-import 'education/education_screen.dart';
-import 'about/about_notifier.dart';
-import 'about/about_screen.dart';
+import 'features/auth/presentation/providers/auth_provider.dart';
+import 'features/auth/presentation/pages/login_screen.dart';
+import 'features/auth/presentation/pages/register_screen.dart';
+import 'features/projects/presentation/providers/project_provider.dart';
+import 'features/projects/presentation/pages/project_screen.dart';
+import 'features/skills/presentation/providers/skill_provider.dart';
+import 'features/skills/presentation/pages/skill_screen.dart';
+import 'features/education/presentation/providers/education_provider.dart';
+import 'features/education/presentation/pages/education_screen.dart';
+import 'features/about/presentation/providers/about_provider.dart';
+import 'features/about/presentation/pages/about_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -50,11 +49,11 @@ class MyApp extends ConsumerWidget {
           // Auth Routes
           GoRoute(
             path: '/login',
-            builder: (context, state) => LoginScreen(),
+            builder: (context, state) => const LoginScreen(),
           ),
           GoRoute(
             path: '/register',
-            builder: (context, state) => RegisterScreen(),
+            builder: (context, state) => const RegisterScreen(),
           ),
           
           // Main App Routes
@@ -64,23 +63,19 @@ class MyApp extends ConsumerWidget {
           ),
           GoRoute(
             path: '/projects',
-            builder: (context, state) => const ProjectListScreen(),
-          ),
-          GoRoute(
-            path: '/add-project',
-            builder: (context, state) => const AddProjectScreen(),
+            builder: (context, state) => const ProjectScreen(),
           ),
           GoRoute(
             path: '/skills',
-            builder: (context, state) => const SkillsScreen(),
+            builder: (context, state) => const SkillScreen(),
           ),
           GoRoute(
             path: '/education',
-            builder: (context, state) => EducationScreen(),
+            builder: (context, state) => const EducationScreen(),
           ),
           GoRoute(
             path: '/about',
-            builder: (context, state) => AboutScreen(),
+            builder: (context, state) => const AboutScreen(),
           ),
         ],
       ),
