@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
-import '../theme/app_theme.dart';
 import '../utils/validators.dart';
 
 /// A reusable text field that integrates with the app's theme and validation.
@@ -30,16 +29,16 @@ class AppTextField extends StatelessWidget {
       validator: validator ?? Validators.nonEmpty,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(fontFamily: AppTheme.fontInter),
+        hintStyle: TextStyle(fontFamily: 'Inter'),
         filled: true,
         fillColor: AppColors.lightSurface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMD),
           borderSide: BorderSide.none,
         ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.spacingLarge,
-          vertical: AppSizes.spacingMedium,
+          horizontal: AppSizes.spacingLG,
+          vertical: AppSizes.spacingMD,
         ),
       ),
     );

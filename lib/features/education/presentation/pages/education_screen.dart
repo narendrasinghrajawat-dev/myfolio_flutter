@@ -1,9 +1,10 @@
+import 'package:codewithnarendra/core/constants/app_colors.dart';
+import 'package:codewithnarendra/core/constants/app_icons.dart';
+import 'package:codewithnarendra/core/constants/app_sizes.dart';
+import 'package:codewithnarendra/core/constants/app_strings.dart';
+import 'package:codewithnarendra/features/education/presentation/providers/education_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_icons.dart';
 import '../providers/education_provider.dart';
 
 class EducationScreen extends ConsumerWidget {
@@ -142,7 +143,7 @@ class EducationScreen extends ConsumerWidget {
               Row(
                 children: [
                   Icon(
-                    AppIcons.school,
+                    AppIcons.education,
                     size: AppSizes.iconXS,
                     color: AppColors.grey500,
                   ),

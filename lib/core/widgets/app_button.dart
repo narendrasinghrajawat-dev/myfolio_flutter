@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
-import '../theme/app_theme.dart';
 
 /// A reusable button that follows the app's design language.
 class AppButton extends StatelessWidget {
@@ -28,11 +27,11 @@ class AppButton extends StatelessWidget {
         backgroundColor: background,
         foregroundColor: foreground,
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.spacingLarge,
-          vertical: AppSizes.spacingMedium,
+          horizontal: AppSizes.spacingLG,
+          vertical: AppSizes.spacingMD,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMD),
         ),
       ),
       child: isLoading
@@ -41,7 +40,7 @@ class AppButton extends StatelessWidget {
               height: 20,
               child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.white),
             )
-          : Text(label, style: const TextStyle(fontFamily: AppTheme.fontInter)),
+          : Text(label),
     );
   }
 }

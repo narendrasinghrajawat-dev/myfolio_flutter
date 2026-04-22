@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/api_urls.dart';
 import '../../data/datasources/skill_remote_datasource.dart';
 import '../../data/repositories/skill_repository_impl.dart';
 import '../../domain/repositories/skill_repository.dart';

@@ -168,9 +168,9 @@ class ApiService {
   // Retry mechanism
   Future<T> retryOperation<T>(
     Future<T> Function() operation,
-    int maxRetries = 3,
+    {int maxRetries = 3,
     Duration delay = const Duration(seconds: 1),
-  ) async {
+  }) async {
     for (int i = 0; i < maxRetries; i++) {
       try {
         return await operation();

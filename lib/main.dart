@@ -3,25 +3,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 
-import 'core/services/api_service.dart';
-import 'core/themes/app_theme.dart';
-import 'features/auth/presentation/providers/auth_provider.dart';
+import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/controllers/auth_controller.dart';
 import 'features/auth/presentation/pages/login_screen.dart';
-import 'features/auth/presentation/pages/register_screen.dart';
-import 'features/projects/presentation/providers/project_provider.dart';
+import 'features/admin/presentation/pages/admin_login_screen.dart';
+import 'features/admin/presentation/pages/admin_dashboard_screen.dart';
 import 'features/projects/presentation/pages/project_screen.dart';
-import 'features/skills/presentation/providers/skill_provider.dart';
 import 'features/skills/presentation/pages/skill_screen.dart';
-import 'features/education/presentation/providers/education_provider.dart';
 import 'features/education/presentation/pages/education_screen.dart';
-import 'features/about/presentation/providers/about_provider.dart';
 import 'features/about/presentation/pages/about_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  
+  // Initialize Firebase (optional - can be removed if using JWT auth)
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    // Firebase initialization failed - app will work without it for JWT auth
+    debugPrint('Firebase initialization failed: $e');
+  }
   
   runApp(
     ProviderScope(
@@ -35,25 +38,27 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-    
     return MaterialApp.router(
       title: 'MyFolio',
       debugShowCheckedModeBanner: false,
       routerConfig: GoRouter(
         navigatorKey: navigatorKey,
-        initialLocation: authState.status == AuthStatus.authenticated 
-            ? '/portfolio' 
-            : '/login',
+        initialLocation: '/login',
         routes: [
-          // Auth Routes
+          // User Auth Routes
           GoRoute(
             path: '/login',
             builder: (context, state) => const LoginScreen(),
           ),
+          
+          // Admin Auth Routes
           GoRoute(
-            path: '/register',
-            builder: (context, state) => const RegisterScreen(),
+            path: '/admin/login',
+            builder: (context, state) => const AdminLoginScreen(),
+          ),
+          GoRoute(
+            path: '/admin/dashboard',
+            builder: (context, state) => const AdminDashboardScreen(),
           ),
           
           // Main App Routes
@@ -91,7 +96,7 @@ class PortfolioScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
+    final authState = ref.watch(authControllerProvider);
     
     return Scaffold(
       appBar: AppBar(
@@ -102,7 +107,7 @@ class PortfolioScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              ref.read(authNotifierProvider.notifier).signOut();
+              ref.read(authControllerProvider.notifier).logout();
             },
           ),
         ],
@@ -120,7 +125,7 @@ class PortfolioScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Hello ${authState.displayName ?? 'User'}!',
+              'Hello ${authState.user?.email ?? 'User'}!',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 32),

@@ -1,12 +1,9 @@
+import 'package:codewithnarendra/core/widgets/app_text.dart';
 import 'package:flutter/material.dart';
-import '../constants/app_breakpoints.dart';
-import '../constants/app_sizes.dart';
 import '../constants/app_colors.dart';
+import '../utils/screen_util.dart';
 import '../widgets/responsive_builder.dart';
-import '../widgets/responsive_container.dart';
-import '../widgets/responsive_grid.dart';
-import '../widgets/responsive_row.dart';
-import '../widgets/responsive_column.dart';
+
 
 /// Example usage of the responsive UI system
 class ResponsiveExampleScreen extends StatelessWidget {

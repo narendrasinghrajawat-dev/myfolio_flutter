@@ -391,7 +391,6 @@ abstract final class AppStrings {
   static const String a11yVisible = 'Visible';
   static const String a11yHidden = 'Hidden';
   static const String a11yEnabled = 'Enabled';
-  static const String a11yDisabled = 'Disabled';
   static const String a11yFocused = 'Focused';
   static const String a11yUnfocused = 'Unfocused';
   static const String a11yHovered = 'Hovered';

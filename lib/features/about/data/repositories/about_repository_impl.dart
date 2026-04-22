@@ -1,3 +1,5 @@
+import 'package:codewithnarendra/features/about/data/models/about_model.dart';
+
 import '../datasources/about_remote_datasource.dart';
 import '../../domain/repositories/about_repository.dart';
 import '../../domain/entities/about_entity.dart';

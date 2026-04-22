@@ -1,15 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_constants.dart';
 import '../exceptions/app_exceptions.dart';
 
 class NetworkService {
   late Dio _dio;
+  String? _authToken;
   
   NetworkService() {
     _dio = Dio(BaseOptions(
       baseUrl: AppConstants.apiBaseUrl,
-      connectTimeout: Duration(milliseconds: int.parse(AppConstants.apiTimeout)),
-      receiveTimeout: Duration(milliseconds: int.parse(AppConstants.apiTimeout)),
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -23,6 +26,14 @@ class NetworkService {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
+          // Add auth token if available
+          if (_authToken != null) {
+            options.headers['Authorization'] = 'Bearer $_authToken';
+          }
+          
+          // Add language header
+          options.headers['Accept-Language'] = 'en';
+          
           print('Request: ${options.method} ${options.path}');
           handler.next(options);
         },
@@ -166,11 +177,18 @@ class NetworkService {
     }
   }
   
-  void updateAuthToken(String token) {
+  void setAuthToken(String token) {
+    _authToken = token;
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
   
   void clearAuthToken() {
+    _authToken = null;
     _dio.options.headers.remove('Authorization');
   }
 }
+
+/// Provider for NetworkService
+final networkServiceProvider = Provider<NetworkService>((ref) {
+  return NetworkService();
+});

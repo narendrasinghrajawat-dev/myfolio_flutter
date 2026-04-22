@@ -17,12 +17,11 @@ class EducationNotifier extends StateNotifier<EducationState> {
     required CreateEducationUseCase createEducationUseCase,
     required UpdateEducationUseCase updateEducationUseCase,
     required DeleteEducationUseCase deleteEducationUseCase,
-  }) : super(const EducationState(status: EducationStatus.initial)) {
-    _getEducationUseCase = getEducationUseCase;
-    _createEducationUseCase = createEducationUseCase;
-    _updateEducationUseCase = updateEducationUseCase;
-    _deleteEducationUseCase = deleteEducationUseCase;
-  }
+  })  : _getEducationUseCase = getEducationUseCase,
+        _createEducationUseCase = createEducationUseCase,
+        _updateEducationUseCase = updateEducationUseCase,
+        _deleteEducationUseCase = deleteEducationUseCase,
+        super(const EducationState(status: EducationStatus.initial));
 
   Future<void> getEducation() async {
     state = state.copyWith(status: EducationStatus.loading);

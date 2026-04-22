@@ -122,17 +122,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
-        final updates = <String, dynamic>{};
-        
-        if (displayName != null && displayName!.isNotEmpty) {
-          updates['displayName'] = displayName;
-        }
-        
-        if (photoURL != null && photoURL!.isNotEmpty) {
-          updates['photoURL'] = photoURL;
-        }
-        
-        await user!.updateProfile(updates);
+        await user.updateProfile(
+          displayName: displayName?.isNotEmpty == true ? displayName : null,
+          photoURL: photoURL?.isNotEmpty == true ? photoURL : null,
+        );
       }
     } catch (e) {
       throw Exception('Failed to update profile: ${e.toString()}');

@@ -17,12 +17,11 @@ class SkillNotifier extends StateNotifier<SkillState> {
     required CreateSkillUseCase createSkillUseCase,
     required UpdateSkillUseCase updateSkillUseCase,
     required DeleteSkillUseCase deleteSkillUseCase,
-  }) : super(const SkillState(status: SkillStatus.initial)) {
-    _getSkillsUseCase = getSkillsUseCase;
-    _createSkillUseCase = createSkillUseCase;
-    _updateSkillUseCase = updateSkillUseCase;
-    _deleteSkillUseCase = deleteSkillUseCase;
-  }
+  }) : _getSkillsUseCase = getSkillsUseCase,
+       _createSkillUseCase = createSkillUseCase,
+       _updateSkillUseCase = updateSkillUseCase,
+       _deleteSkillUseCase = deleteSkillUseCase,
+       super(const SkillState(status: SkillStatus.initial));
 
   Future<void> getSkills() async {
     state = state.copyWith(status: SkillStatus.loading);

@@ -33,7 +33,7 @@ class AppText extends StatelessWidget {
     );
   }
 
-  TextStyle get _defaultStyle {
+  static TextStyle get _defaultStyle {
     return const TextStyle(
       fontSize: AppSizes.fontMD,
       color: AppColors.onSurface,
@@ -74,13 +74,16 @@ class AppText extends StatelessWidget {
     int? maxLines,
     TextOverflow? overflow,
     bool? softWrap,
+    Color? color,
+    FontWeight? fontWeight,
   }) {
     return AppText(
       key: key,
       text: text,
       style: (style ?? _defaultStyle).copyWith(
         fontSize: AppSizes.fontMD,
-        fontWeight: FontWeight.w500,
+        fontWeight: fontWeight ?? FontWeight.w500,
+        color: color,
       ),
       textAlign: textAlign,
       maxLines: maxLines,
@@ -98,6 +101,7 @@ class AppText extends StatelessWidget {
     int? maxLines,
     TextOverflow? overflow,
     bool? softWrap,
+    Color? color,
   }) {
     return AppText(
       key: key,
@@ -105,6 +109,7 @@ class AppText extends StatelessWidget {
       style: (style ?? _defaultStyle).copyWith(
         fontSize: AppSizes.fontSM,
         fontWeight: FontWeight.w400,
+        color: color,
       ),
       textAlign: textAlign,
       maxLines: maxLines,
@@ -281,7 +286,7 @@ class AppText extends StatelessWidget {
       style: (style ?? _defaultStyle).copyWith(
         fontSize: AppSizes.fontMD,
         fontWeight: FontWeight.w600,
-        color: AppColors.onPrimary,
+        color: AppColors.white,
       ),
       textAlign: textAlign,
       maxLines: maxLines,

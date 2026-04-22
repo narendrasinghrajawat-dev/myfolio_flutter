@@ -1,10 +1,11 @@
+import 'package:codewithnarendra/core/config/app_theme_colors.dart';
+import 'package:codewithnarendra/core/services/localization_service.dart';
+import 'package:codewithnarendra/core/services/theme_service.dart';
+import 'package:codewithnarendra/core/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 
-import '../../../core/themes/app_theme.dart';
-import '../../../core/services/localization_service.dart';
-import '../../../core/services/theme_service.dart';
-import '../auth_notifier.dart';
 
 class AdminPage extends ConsumerWidget {
   const AdminPage({super.key});
@@ -12,16 +13,16 @@ class AdminPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeStateProvider);
-    final authState = ref.watch(authStateProvider);
+    final authState = ref.watch(authControllerProvider);
     
     // Check if user is admin
-    if (!authState.user?.isUserAdmin ?? false) {
+    if (authState.user?.isUserAdmin != true) {
       return Scaffold(
         appBar: AppBar(
           title: Text(context.admin),
           backgroundColor: themeState.isDarkMode 
-              ? AppTheme.darkSurfaceColor 
-              : AppTheme.lightSurfaceColor,
+              ? AppThemeColors.darkSurface 
+              : AppThemeColors.lightSurface,
         ),
         body: Center(
           child: Column(
@@ -55,19 +56,19 @@ class AdminPage extends ConsumerWidget {
       appBar: AppBar(
         title: Text(context.dashboard),
         backgroundColor: themeState.isDarkMode 
-            ? AppTheme.darkSurfaceColor 
-            : AppTheme.lightSurfaceColor,
+            ? AppThemeColors.darkSurface 
+            : AppThemeColors.lightSurface,
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),
             onPressed: () {
-              ref.read(themeNotifierProvider.notifier).toggleTheme();
+              ref.read(themeStateProvider.notifier).toggleTheme();
             },
           ),
           PopupMenuButton<String>(
             onSelected: (language) {
               final lang = language == 'hi' ? AppLanguage.hi : AppLanguage.en;
-              ref.read(localizationNotifierProvider.notifier).setLanguage(lang);
+              ref.read(localizationNotifierProvider).setLanguage(lang);
             },
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -83,8 +84,8 @@ class AdminPage extends ConsumerWidget {
         ],
       ),
       backgroundColor: themeState.isDarkMode 
-          ? AppTheme.darkBackgroundColor 
-          : AppTheme.lightBackgroundColor,
+          ? AppThemeColors.darkBackground 
+          : AppThemeColors.lightBackground,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.spacingMedium),
         child: Column(

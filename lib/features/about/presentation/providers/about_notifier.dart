@@ -11,10 +11,9 @@ class AboutNotifier extends StateNotifier<AboutState> {
   AboutNotifier({
     required GetAboutUseCase getAboutUseCase,
     required UpdateAboutUseCase updateAboutUseCase,
-  }) : super(const AboutState(status: AboutStatus.initial)) {
-    _getAboutUseCase = getAboutUseCase;
-    _updateAboutUseCase = updateAboutUseCase;
-  }
+  }) : _getAboutUseCase = getAboutUseCase,
+       _updateAboutUseCase = updateAboutUseCase,
+       super(const AboutState(status: AboutStatus.initial));
 
   Future<void> getAbout() async {
     state = state.copyWith(status: AboutStatus.loading);

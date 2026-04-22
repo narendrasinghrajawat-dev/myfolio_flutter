@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'project_entity.freezed.dart';
+
 
 @freezed
 class ProjectEntity with _$ProjectEntity {
@@ -17,10 +17,12 @@ class ProjectEntity with _$ProjectEntity {
     bool? isFeatured,
     int? sortOrder,
   }) = _ProjectEntity;
-  
+
+  const ProjectEntity._();
+
   bool get hasImages => images.isNotEmpty;
-  
+
   bool get hasProjectUrl => projectUrl.isNotEmpty;
-  
+
   bool get hasRepositoryUrl => repositoryUrl.isNotEmpty;
 }

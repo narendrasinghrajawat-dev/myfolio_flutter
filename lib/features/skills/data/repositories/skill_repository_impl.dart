@@ -1,3 +1,5 @@
+import 'package:codewithnarendra/features/skills/data/models/skill_model.dart';
+
 import '../datasources/skill_remote_datasource.dart';
 import '../../domain/repositories/skill_repository.dart';
 import '../../domain/entities/skill_entity.dart';

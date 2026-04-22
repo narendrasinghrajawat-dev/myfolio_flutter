@@ -1,5 +1,5 @@
+import 'package:codewithnarendra/core/constants/app_breakpoints.dart';
 import 'package:flutter/material.dart';
-import '../utils/screen_util.dart';
 
 class ResponsiveBuilder extends StatelessWidget {
   final Widget mobile;
@@ -45,8 +45,8 @@ class ResponsiveLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
       mobile: mobile,
-      tablet: tablet,
-      desktop: desktop,
+      tablet: tablet ?? mobile,
+      desktop: desktop ?? mobile,
     );
   }
 }
@@ -167,15 +167,15 @@ class ResponsiveRow extends StatelessWidget {
     return ResponsiveBuilder(
       mobile: Row(
         mainAxisAlignment: mobileAlignment ?? MainAxisAlignment.start,
-        children: _addSpacing(children, spacing ?? 8.0, wrap: wrap),
+        children: _addSpacing(children, spacing ?? 8.0, wrap: wrap ?? false),
       ),
       tablet: Row(
         mainAxisAlignment: tabletAlignment ?? MainAxisAlignment.start,
-        children: _addSpacing(children, spacing ?? 12.0, wrap: wrap),
+        children: _addSpacing(children, spacing ?? 12.0, wrap: wrap ?? false),
       ),
       desktop: Row(
         mainAxisAlignment: desktopAlignment ?? MainAxisAlignment.start,
-        children: _addSpacing(children, spacing ?? 16.0, wrap: wrap),
+        children: _addSpacing(children, spacing ?? 16.0, wrap: wrap ?? false),
       ),
     );
   }
@@ -187,7 +187,7 @@ class ResponsiveRow extends StatelessWidget {
     for (int i = 0; i < children.length; i++) {
       spacedChildren.add(children[i]);
       if (i < children.length - 1) {
-        spacedChildren.add(SizedBox.SizedBox(width: spacing, height: 0));
+        spacedChildren.add(SizedBox(width: spacing, height: 0));
       }
     }
     
@@ -233,6 +233,20 @@ class ResponsiveColumn extends StatelessWidget {
         mainAxisSize: mainAxisSize ?? MainAxisSize.min,
       ),
     );
+  }
+
+  List<Widget> _addSpacing(List<Widget> children, double spacing) {
+    if (children.isEmpty) return children;
+
+    final spacedChildren = <Widget>[];
+    for (int i = 0; i < children.length; i++) {
+      spacedChildren.add(children[i]);
+      if (i < children.length - 1) {
+        spacedChildren.add(SizedBox(height: spacing));
+      }
+    }
+
+    return spacedChildren;
   }
 }
 

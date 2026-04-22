@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/widgets/responsive_builder.dart';
-import '../../../../../core/widgets/responsive_container.dart';
-import '../../../../../core/widgets/responsive_row.dart';
-import '../../../../../core/widgets/responsive_column.dart';
 import '../widgets/admin_form_components.dart';
 
 class AboutManagementPage extends ConsumerStatefulWidget {
@@ -49,7 +45,7 @@ class _AboutManagementPageState extends ConsumerState<AboutManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
       body: ResponsiveBuilder(
         mobile: _buildMobileLayout(),
         tablet: _buildTabletLayout(),
@@ -308,7 +304,7 @@ class _AboutManagementPageState extends ConsumerState<AboutManagementPage> {
             onPressed: _isLoading ? null : _saveAboutData,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.onPrimary,
+              foregroundColor: AppColors.white,
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSizes.paddingLG,
                 vertical: AppSizes.paddingMD,
@@ -381,14 +377,16 @@ class _AboutManagementPageState extends ConsumerState<AboutManagementPage> {
   }
 
   Widget _buildPreviewItem(String label, String value) {
-    return ResponsiveContainer(
-      margin: const EdgeInsets.only(bottom: AppSizes.spacingSM),
-      child: ResponsiveColumn(
-        children: [
-          AppText.label(label),
-          const SizedBox(height: AppSizes.spacingXS),
-          AppText.medium(value),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSizes.spacingSM),
+      child: ResponsiveContainer(
+        child: ResponsiveColumn(
+          children: [
+            AppText.label(label),
+            const SizedBox(height: AppSizes.spacingXS),
+            AppText.medium(value),
+          ],
+        ),
       ),
     );
   }

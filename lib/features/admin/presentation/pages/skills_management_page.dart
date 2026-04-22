@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/widgets/responsive_builder.dart';
-import '../../../../../core/widgets/responsive_container.dart';
-import '../../../../../core/widgets/responsive_row.dart';
-import '../../../../../core/widgets/responsive_column.dart';
 import '../widgets/admin_form_components.dart';
 
 class SkillsManagementPage extends ConsumerStatefulWidget {
@@ -38,7 +34,7 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
       body: ResponsiveBuilder(
         mobile: _buildMobileLayout(),
         tablet: _buildTabletLayout(),
@@ -162,7 +158,6 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
 
   Widget _buildSkillCard(int index, Map<String, dynamic> skill) {
     return ResponsiveContainer(
-      margin: const EdgeInsets.only(bottom: AppSizes.spacingMD),
       mobileDecoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusMD),
@@ -181,14 +176,21 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.paddingMD),
+        padding: const EdgeInsets.only(
+          left: AppSizes.paddingMD,
+          right: AppSizes.paddingMD,
+          top: AppSizes.paddingMD,
+          bottom: AppSizes.paddingMD + AppSizes.spacingMD,
+        ),
         child: ResponsiveColumn(
           children: [
             ResponsiveRow(
               children: [
                 Expanded(
-                  child: AppText.medium(skill['name'] ?? 'Unknown'),
-                  fontWeight: FontWeight.w600,
+                  child: AppText.medium(
+                    skill['name'] ?? 'Unknown',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
                 const SizedBox(width: AppSizes.spacingSM),
                 AdminFormComponents.buildDropdownField<String>(
@@ -220,13 +222,13 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
                 _deleteSkill(index);
               },
             ),
+            const SizedBox(height: AppSizes.spacingSM),
+            AppText.small(skill['category'] ?? 'General'),
+            const SizedBox(height: AppSizes.spacingSM),
+            AppText.small('${skill['years'] ?? 0} years'),
           ],
         ),
-        const SizedBox(height: AppSizes.spacingSM),
-        AppText.small(skill['category'] ?? 'General'),
-        const SizedBox(height: AppSizes.spacingSM),
-        AppText.small('${skill['years'] ?? 0} years'),
-      ],
+      ),
     );
   }
 
@@ -254,7 +256,7 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
 
   void _showAddSkillDialog() {
     showDialog(
-      context: navigatorKey.currentContext!,
+      context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Add New Skill'),
@@ -278,7 +280,9 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
                     DropdownMenuItem(value: 'Expert', child: Text('Expert')),
                   ],
                   onChanged: (value) {
-                    _levelController.text = value;
+                    if (value != null) {
+                      _levelController.text = value;
+                    }
                   },
                 ),
                 const SizedBox(height: AppSizes.spacingMD),
@@ -293,7 +297,9 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
                     DropdownMenuItem(value: 'Tool', child: Text('Tool')),
                   ],
                   onChanged: (value) {
-                    _categoryController.text = value;
+                    if (value != null) {
+                      _categoryController.text = value;
+                    }
                   },
                 ),
                 const SizedBox(height: AppSizes.spacingMD),
@@ -359,7 +365,7 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
 
   void _showEditSkillDialog(int index) {
     showDialog(
-      context: navigatorKey.currentContext!,
+      context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Edit Skill'),
@@ -383,7 +389,9 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
                     DropdownMenuItem(value: 'Expert', child: Text('Expert')),
                   ],
                   onChanged: (value) {
-                    _levelController.text = value;
+                    if (value != null) {
+                      _levelController.text = value;
+                    }
                   },
                 ),
                 const SizedBox(height: AppSizes.spacingMD),
@@ -398,7 +406,9 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
                     DropdownMenuItem(value: 'Tool', child: Text('Tool')),
                   ],
                   onChanged: (value) {
-                    _categoryController.text = value;
+                    if (value != null) {
+                      _categoryController.text = value;
+                    }
                   },
                 ),
                 const SizedBox(height: AppSizes.spacingMD),
@@ -483,7 +493,7 @@ class _SkillsManagementPageState extends ConsumerState<SkillsManagementPage> {
 
   Future<void> _saveSkillsData() async {
     // TODO: Save skills to API/storage
-    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Skills saved successfully!'),
         backgroundColor: AppColors.success,

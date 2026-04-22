@@ -1,9 +1,10 @@
+import 'package:codewithnarendra/core/constants/app_colors.dart';
+import 'package:codewithnarendra/core/constants/app_icons.dart';
+import 'package:codewithnarendra/core/constants/app_sizes.dart';
+import 'package:codewithnarendra/core/constants/app_strings.dart';
+import 'package:codewithnarendra/features/skills/presentation/providers/skill_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_icons.dart';
 import '../providers/skill_provider.dart';
 
 class SkillScreen extends ConsumerWidget {
@@ -196,7 +197,7 @@ class SkillScreen extends ConsumerWidget {
 
   IconData _getIconData(String iconName) {
     // TODO: Map icon names to IconData
-    return AppIcons.code;
+    return AppIcons.projects;
   }
 
   Widget _buildErrorWidget(String errorMessage, skillNotifier) {

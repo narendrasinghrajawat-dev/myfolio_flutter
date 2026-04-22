@@ -8,6 +8,7 @@ class UserEntity extends Equatable {
   final bool emailVerified;
   final DateTime? createdAt;
   final DateTime? lastLoginAt;
+  final bool? isAdmin;
 
   const UserEntity({
     this.id,
@@ -17,6 +18,7 @@ class UserEntity extends Equatable {
     this.emailVerified = false,
     this.createdAt,
     this.lastLoginAt,
+    this.isAdmin,
   });
 
   UserEntity copyWith({
@@ -27,6 +29,7 @@ class UserEntity extends Equatable {
     bool? emailVerified,
     DateTime? createdAt,
     DateTime? lastLoginAt,
+    bool? isAdmin,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -36,6 +39,7 @@ class UserEntity extends Equatable {
       emailVerified: emailVerified ?? this.emailVerified,
       createdAt: createdAt ?? this.createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
+      isAdmin: isAdmin ?? this.isAdmin,
     );
   }
 
@@ -48,10 +52,13 @@ class UserEntity extends Equatable {
         emailVerified,
         createdAt,
         lastLoginAt,
+        isAdmin,
       ];
 
   @override
   String toString() {
     return 'UserEntity(id: $id, email: $email, displayName: $displayName)';
   }
+
+  bool get isUserAdmin => isAdmin == true;
 }

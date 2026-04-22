@@ -1,3 +1,5 @@
+import 'package:flutter/animation.dart';
+
 abstract final class AppSizes {
   // Padding
   static const double paddingXS = 4.0;

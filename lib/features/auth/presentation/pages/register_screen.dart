@@ -5,9 +5,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/responsive_builder.dart';
-import '../../../../core/widgets/responsive_container.dart';
-import '../../../../core/widgets/responsive_row.dart';
-import '../providers/auth_provider.dart';
+import '../controllers/auth_controller.dart';
+  
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -37,7 +36,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
       body: ResponsiveBuilder(
         mobile: _buildMobileLayout(context),
         tablet: _buildTabletLayout(context),
@@ -133,7 +132,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget _buildHeader() {
     return ResponsiveColumn(
       children: [
-        AppText.h1(AppStrings.register),
+        AppText.h1(AppStrings.authRegister),
         const SizedBox(height: AppSizes.spacingSM),
         AppText.medium(
           'Create your account to get started',
@@ -163,7 +162,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         controller: _displayNameController,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
-          labelText: AppStrings.displayName,
+          labelText: AppStrings.authDisplayName,
           hintText: 'Enter your display name',
           prefixIcon: const Icon(Icons.person_outlined),
           border: OutlineInputBorder(
@@ -175,8 +174,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
         validator: (value) {
-          if (value == null || value!.isEmpty) {
-            return AppStrings.requiredField;
+          if (value == null || value.isEmpty) {
+            return AppStrings.fieldRequired;
           }
           if (value.length < 2) {
             return 'Display name must be at least 2 characters';
@@ -195,7 +194,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         controller: _emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-          labelText: AppStrings.email,
+          labelText: AppStrings.authEmail,
           hintText: 'Enter your email',
           prefixIcon: const Icon(Icons.email_outlined),
           border: OutlineInputBorder(
@@ -207,11 +206,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
         validator: (value) {
-          if (value == null || value!.isEmpty) {
-            return AppStrings.requiredField;
+          if (value == null || value.isEmpty) {
+            return AppStrings.fieldRequired;
           }
           if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-            return AppStrings.invalidEmail;
+            return AppStrings.fieldInvalidEmail;
           }
           return null;
         },
@@ -227,7 +226,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         controller: _passwordController,
         obscureText: _obscurePassword,
         decoration: InputDecoration(
-          labelText: AppStrings.password,
+          labelText: AppStrings.authPassword,
           hintText: 'Enter your password',
           prefixIcon: const Icon(Icons.lock_outlined),
           suffixIcon: IconButton(
@@ -247,11 +246,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
         validator: (value) {
-          if (value == null || value!.isEmpty) {
-            return AppStrings.requiredField;
+          if (value == null || value.isEmpty) {
+            return AppStrings.fieldRequired;
           }
           if (value.length < 6) {
-            return AppStrings.minLength;
+            return AppStrings.fieldInvalidPassword;
           }
           return null;
         },
@@ -267,7 +266,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         controller: _confirmPasswordController,
         obscureText: _obscureConfirmPassword,
         decoration: InputDecoration(
-          labelText: AppStrings.confirmPassword,
+          labelText: AppStrings.authConfirmPassword,
           hintText: 'Confirm your password',
           prefixIcon: const Icon(Icons.lock_outlined),
           suffixIcon: IconButton(
@@ -287,8 +286,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
         validator: (value) {
-          if (value == null || value!.isEmpty) {
-            return AppStrings.requiredField;
+          if (value == null || value.isEmpty) {
+            return AppStrings.fieldRequired;
           }
           if (value != _passwordController.text) {
             return 'Passwords do not match';
@@ -301,15 +300,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Widget _buildSubmitButton() {
     return Consumer(
-      builder: (context, ref) {
-        final authState = ref.watch(authStateProvider);
+      builder: (context, ref, child) {
+        final authState = ref.watch(authControllerProvider);
         
         return ResponsiveContainer(
           mobilePadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingSM),
           desktopPadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingMD),
           child: SizedBox(
             width: double.infinity,
-            height: AppSizes.buttonHeight,
+            height: AppSizes.buttonHeightMD,
             child: ElevatedButton(
               onPressed: authState.status == AuthStatus.loading ? null : _handleSubmit,
               style: ElevatedButton.styleFrom(
@@ -329,7 +328,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
                       ),
                     )
-                  : AppText.button(AppStrings.createAccount),
+                  : AppText.button(AppStrings.authCreateAccount),
             ),
           ),
         );
@@ -339,7 +338,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Widget _buildLoginLink() {
     return ResponsiveRow(
-      alignment: MainAxisAlignment.center,
+      mobileAlignment: MainAxisAlignment.center,
+      tabletAlignment: MainAxisAlignment.center,
+      desktopAlignment: MainAxisAlignment.center,
       children: [
         AppText.small('Already have an account? '),
         TextButton(
@@ -347,8 +348,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             // TODO: Navigate to login
           },
           child: AppText.small(
-            AppStrings.signInInstead,
-            color: AppColors.primary,
+            AppStrings.authSignInInstead,
+            style: const TextStyle(color: AppColors.primary),
           ),
         ),
       ],
@@ -357,11 +358,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Future<void> _handleSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final notifier = ref.read(authNotifierProvider.notifier);
-      await notifier.registerWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
-        _displayNameController.text.trim(),
+      final notifier = ref.read(authControllerProvider.notifier);
+      final displayName = _displayNameController.text.trim();
+      final nameParts = displayName.split(' ');
+      final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+      final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+      
+      await notifier.register(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        firstName: firstName,
+        lastName: lastName,
       );
     }
   }

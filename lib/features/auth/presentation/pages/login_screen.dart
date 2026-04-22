@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/widgets/common_text.dart';
+import '../../../../core/widgets/common_text_field.dart';
+import '../../../../core/widgets/common_button.dart';
+import '../../../../core/widgets/responsive_layout.dart';
+import '../../../../core/config/app_theme_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/app_text.dart';
-import '../../../../core/widgets/responsive_builder.dart';
-import '../../../../core/widgets/responsive_container.dart';
-import '../../../../core/widgets/responsive_row.dart';
-import '../providers/auth_provider.dart';
+import '../controllers/auth_controller.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -21,7 +21,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -32,33 +31,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: ResponsiveBuilder(
-        mobile: _buildMobileLayout(context),
-        tablet: _buildTabletLayout(context),
-        desktop: _buildDesktopLayout(context),
-      ),
-    );
-  }
+    final authState = ref.watch(authControllerProvider);
 
-  Widget _buildMobileLayout(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.paddingMD),
+    return Scaffold(
+      backgroundColor: AppThemeColors.lightBackground,
+      body: ResponsiveContainer(
+        center: true,
+        useCard: true,
+        backgroundColor: AppThemeColors.lightSurface,
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: AppSizes.spacingXL),
+              const ResponsiveSpacing(mobile: AppSizes.spacingXL),
               _buildHeader(),
-              const SizedBox(height: AppSizes.spacingXL),
-              _buildLoginForm(),
-              const SizedBox(height: AppSizes.spacingMD),
-              _buildSubmitButton(),
-              const SizedBox(height: AppSizes.spacingMD),
+              const ResponsiveSpacing(mobile: AppSizes.spacingXL),
+              _buildEmailField(),
+              const ResponsiveSpacing(mobile: AppSizes.spacingMD),
+              _buildPasswordField(),
+              if (authState.hasError && authState.errorMessage != null) ...[
+                const ResponsiveSpacing(mobile: AppSizes.spacingSM),
+                CommonText.verySmall(
+                  authState.errorMessage!,
+                  color: AppThemeColors.error,
+                ),
+              ],
+              const ResponsiveSpacing(mobile: AppSizes.spacingSM),
+              _buildForgotPasswordLink(),
+              const ResponsiveSpacing(mobile: AppSizes.spacingLG),
+              _buildLoginButton(authState),
+              const ResponsiveSpacing(mobile: AppSizes.spacingMD),
               _buildRegisterLink(),
+              const ResponsiveSpacing(mobile: AppSizes.spacingXL),
             ],
           ),
         ),
@@ -66,161 +72,63 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildTabletLayout(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.paddingLG),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: AppSizes.spacingXL),
-                  _buildLoginForm(),
-                  const SizedBox(height: AppSizes.spacingMD),
-                  _buildSubmitButton(),
-                  const SizedBox(height: AppSizes.spacingMD),
-                  _buildRegisterLink(),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDesktopLayout(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
-          child: Card(
-            elevation: AppSizes.elevationLG,
-            shadowColor: AppColors.grey300,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSizes.paddingXL),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildHeader(),
-                    const SizedBox(height: AppSizes.spacingXL),
-                    _buildLoginForm(),
-                    const SizedBox(height: AppSizes.spacingMD),
-                    _buildSubmitButton(),
-                    const SizedBox(height: AppSizes.spacingMD),
-                    _buildRegisterLink(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildHeader() {
-    return ResponsiveColumn(
+    return Column(
       children: [
-        AppText.h1(AppStrings.login),
-        const SizedBox(height: AppSizes.spacingSM),
-        AppText.medium(
-          'Welcome back! Please sign in to continue.',
-          textAlign: TextAlign.center,
+        CommonText.veryLarge(
+          AppStrings.authWelcome,
+          fontWeight: FontWeight.bold,
         ),
-      ],
-    );
-  }
-
-  Widget _buildLoginForm() {
-    return ResponsiveColumn(
-      spacing: AppSizes.spacingMD,
-      children: [
-        _buildEmailField(),
-        const SizedBox(height: AppSizes.spacingMD),
-        _buildPasswordField(),
-        const SizedBox(height: AppSizes.spacingSM),
-        _buildForgotPasswordLink(),
+        const ResponsiveSpacing(mobile: AppSizes.spacingSM),
+        CommonText.small(
+          AppStrings.appName,
+          color: AppThemeColors.grey600,
+        ),
       ],
     );
   }
 
   Widget _buildEmailField() {
-    return ResponsiveContainer(
-      mobilePadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingSM),
-      desktopPadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingMD),
-      child: TextFormField(
-        controller: _emailController,
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          labelText: AppStrings.email,
-          hintText: 'Enter your email',
-          prefixIcon: const Icon(Icons.email_outlined),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusMD),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusMD),
-            borderSide: const BorderSide(color: AppColors.primary),
-          ),
-        ),
-        validator: (value) {
-          if (value == null || value!.isEmpty) {
-            return AppStrings.requiredField;
-          }
-          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-            return AppStrings.invalidEmail;
-          }
-          return null;
-        },
-      ),
+    return CommonTextField(
+      controller: _emailController,
+      labelText: AppStrings.authEmail,
+      hintText: 'Enter your email',
+      prefixIcon: Icons.email_outlined,
+      keyboardType: TextInputType.emailAddress,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+          return 'Invalid email address';
+        }
+        return null;
+      },
     );
   }
 
   Widget _buildPasswordField() {
-    return ResponsiveContainer(
-      mobilePadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingSM),
-      desktopPadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingMD),
-      child: TextFormField(
-        controller: _passwordController,
-        obscureText: _obscurePassword,
-        decoration: InputDecoration(
-          labelText: AppStrings.password,
-          hintText: 'Enter your password',
-          prefixIcon: const Icon(Icons.lock_outlined),
-          suffixIcon: IconButton(
-            icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-            onPressed: () {
-              setState(() {
-                _obscurePassword = !_obscurePassword;
-              });
-            },
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusMD),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSizes.radiusMD),
-            borderSide: const BorderSide(color: AppColors.primary),
-          ),
-        ),
-        validator: (value) {
-          if (value == null || value!.isEmpty) {
-            return AppStrings.requiredField;
-          }
-          if (value.length < 6) {
-            return AppStrings.minLength;
-          }
-          return null;
-        },
-      ),
+    return CommonTextField(
+      controller: _passwordController,
+      labelText: AppStrings.authPassword,
+      hintText: 'Enter your password',
+      prefixIcon: Icons.lock_outline,
+      suffixIcon: _obscurePassword ? Icons.visibility_off : Icons.visibility,
+      onSuffixIconPressed: () {
+        setState(() {
+          _obscurePassword = !_obscurePassword;
+        });
+      },
+      obscureText: _obscurePassword,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field is required';
+        }
+        if (value.length < 8) {
+          return 'Password must be at least 8 characters';
+        }
+        return null;
+      },
     );
   }
 
@@ -231,64 +139,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         onPressed: () {
           // TODO: Implement forgot password
         },
-        child: AppText.small(
-          AppStrings.forgotPassword,
-          color: AppColors.primary,
+        child: CommonText.small(
+          'Forgot Password?',
+          color: AppThemeColors.primary,
         ),
       ),
     );
   }
 
-  Widget _buildSubmitButton() {
-    return Consumer(
-      builder: (context, ref) {
-        final authState = ref.watch(authStateProvider);
-        
-        return ResponsiveContainer(
-          mobilePadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingSM),
-          desktopPadding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingMD),
-          child: SizedBox(
-            width: double.infinity,
-            height: AppSizes.buttonHeight,
-            child: ElevatedButton(
-              onPressed: authState.status == AuthStatus.loading ? null : _handleSubmit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onPrimary,
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.paddingLG),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSizes.radiusMD),
-                ),
-              ),
-              child: authState.status == AuthStatus.loading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
-                      ),
-                    )
-                  : AppText.button(AppStrings.login),
-            ),
-          ),
-        );
-      },
+  Widget _buildLoginButton(dynamic authState) {
+    return CommonButton(
+      text: AppStrings.authLogin,
+      onPressed: authState.isLoading ? null : _handleSubmit,
+      isLoading: authState.isLoading,
+      type: CommonButtonType.primary,
+      size: CommonButtonSize.large,
     );
   }
 
   Widget _buildRegisterLink() {
-    return ResponsiveRow(
-      alignment: MainAxisAlignment.center,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        AppText.small('Don\'t have an account? '),
+        CommonText.small(
+          "Don't have an account?",
+        ),
         TextButton(
           onPressed: () {
             // TODO: Navigate to register
           },
-          child: AppText.small(
-            AppStrings.register,
-            color: AppColors.primary,
+          child: CommonText.small(
+            AppStrings.authRegister,
+            color: AppThemeColors.primary,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -297,11 +180,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _handleSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final notifier = ref.read(authNotifierProvider.notifier);
-      await notifier.signInWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
+      final controller = ref.read(authControllerProvider.notifier);
+      final success = await controller.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
+
+      if (success && mounted) {
+        // Navigate to home/portfolio
+        // TODO: Implement navigation
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'package:codewithnarendra/features/education/data/models/education_model.dart';
+
 import '../datasources/education_remote_datasource.dart';
 import '../../domain/repositories/education_repository.dart';
 import '../../domain/entities/education_entity.dart';

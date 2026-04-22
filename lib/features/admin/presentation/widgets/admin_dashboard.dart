@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/responsive_builder.dart';
-import '../../../../core/widgets/responsive_container.dart';
-import '../../../../core/widgets/responsive_row.dart';
-import '../../../../core/widgets/responsive_column.dart';
 import '../providers/admin_navigation_provider.dart';
 
 class AdminDashboard extends ConsumerWidget {
@@ -19,19 +15,19 @@ class AdminDashboard extends ConsumerWidget {
     final navigationState = ref.watch(adminNavigationProvider);
     
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
       body: ResponsiveBuilder(
-        mobile: _buildMobileLayout(context, navigationState),
-        tablet: _buildTabletLayout(context, navigationState),
-        desktop: _buildDesktopLayout(context, navigationState),
+        mobile: _buildMobileLayout(context, navigationState, ref),
+        tablet: _buildTabletLayout(context, navigationState, ref),
+        desktop: _buildDesktopLayout(context, navigationState, ref),
       ),
     );
   }
 
-  Widget _buildMobileLayout(BuildContext context, AdminNavigationState navigationState) {
+  Widget _buildMobileLayout(BuildContext context, AdminNavigationState navigationState, WidgetRef ref) {
     return Column(
       children: [
-        _buildMobileAppBar(context, navigationState),
+        _buildMobileAppBar(context, navigationState, ref),
         Expanded(
           child: _buildMainContent(navigationState),
         ),
@@ -39,13 +35,13 @@ class AdminDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildTabletLayout(BuildContext context, AdminNavigationState navigationState) {
+  Widget _buildTabletLayout(BuildContext context, AdminNavigationState navigationState, WidgetRef ref) {
     return Row(
       children: [
         if (navigationState.isSidebarExpanded)
           SizedBox(
             width: 250,
-            child: _buildSidebar(navigationState),
+            child: _buildSidebar(navigationState, ref),
           ),
         Expanded(
           child: _buildMainContent(navigationState),
@@ -54,13 +50,13 @@ class AdminDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildDesktopLayout(BuildContext context, AdminNavigationState navigationState) {
+  Widget _buildDesktopLayout(BuildContext context, AdminNavigationState navigationState, WidgetRef ref) {
     return Row(
       children: [
         if (navigationState.isSidebarExpanded)
           SizedBox(
             width: 280,
-            child: _buildSidebar(navigationState),
+            child: _buildSidebar(navigationState, ref),
           ),
         Expanded(
           child: _buildMainContent(navigationState),
@@ -69,7 +65,7 @@ class AdminDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildMobileAppBar(BuildContext context, AdminNavigationState navigationState) {
+  Widget _buildMobileAppBar(BuildContext context, AdminNavigationState navigationState, WidgetRef ref) {
     return ResponsiveContainer(
       mobilePadding: const EdgeInsets.all(AppSizes.paddingSM),
       desktopPadding: const EdgeInsets.all(AppSizes.paddingMD),
@@ -99,7 +95,7 @@ class AdminDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSidebar(AdminNavigationState navigationState) {
+  Widget _buildSidebar(AdminNavigationState navigationState, WidgetRef ref) {
     return ResponsiveContainer(
       mobileDecoration: BoxDecoration(
         color: AppColors.surface,
@@ -115,7 +111,7 @@ class AdminDashboard extends ConsumerWidget {
         children: [
           _buildSidebarHeader(),
           const SizedBox(height: AppSizes.spacingMD),
-          _buildSidebarMenu(navigationState),
+          _buildSidebarMenu(navigationState, ref),
         ],
       ),
     );
@@ -151,7 +147,7 @@ class AdminDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildSidebarMenu(AdminNavigationState navigationState) {
+  Widget _buildSidebarMenu(AdminNavigationState navigationState, WidgetRef ref) {
     return ResponsiveColumn(
       children: [
         _buildSidebarMenuItem(
@@ -159,30 +155,35 @@ class AdminDashboard extends ConsumerWidget {
           title: 'Dashboard',
           section: AdminSection.dashboard,
           navigationState: navigationState,
+          onTap: () => ref.read(adminNavigationProvider.notifier).navigateToSection(AdminSection.dashboard),
         ),
         _buildSidebarMenuItem(
           icon: AppIcons.person,
           title: 'About',
           section: AdminSection.about,
           navigationState: navigationState,
+          onTap: () => ref.read(adminNavigationProvider.notifier).navigateToSection(AdminSection.about),
         ),
         _buildSidebarMenuItem(
-          icon: AppIcons.psychology,
+          icon: AppIcons.skills,
           title: 'Skills',
           section: AdminSection.skills,
           navigationState: navigationState,
+          onTap: () => ref.read(adminNavigationProvider.notifier).navigateToSection(AdminSection.skills),
         ),
         _buildSidebarMenuItem(
-          icon: AppIcons.school,
+          icon: AppIcons.education,
           title: 'Education',
           section: AdminSection.education,
           navigationState: navigationState,
+          onTap: () => ref.read(adminNavigationProvider.notifier).navigateToSection(AdminSection.education),
         ),
         _buildSidebarMenuItem(
           icon: AppIcons.email,
           title: 'Contact',
           section: AdminSection.contact,
           navigationState: navigationState,
+          onTap: () => ref.read(adminNavigationProvider.notifier).navigateToSection(AdminSection.contact),
         ),
       ],
     );
@@ -193,6 +194,7 @@ class AdminDashboard extends ConsumerWidget {
     required String title,
     required AdminSection section,
     required AdminNavigationState navigationState,
+    required VoidCallback onTap,
   }) {
     final isSelected = navigationState.currentSection == section;
     
@@ -203,10 +205,7 @@ class AdminDashboard extends ConsumerWidget {
         color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(AppSizes.radiusMD),
         child: InkWell(
-          onTap: () {
-            final notifier = ref.read(adminNavigationProvider.notifier);
-            notifier.navigateToSection(section);
-          },
+          onTap: onTap,
           borderRadius: BorderRadius.circular(AppSizes.radiusMD),
           child: ResponsiveContainer(
             mobilePadding: const EdgeInsets.all(AppSizes.paddingMD),

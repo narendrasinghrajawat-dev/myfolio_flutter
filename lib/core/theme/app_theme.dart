@@ -1,152 +1,139 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../config/app_theme_colors.dart';
 import '../constants/app_sizes.dart';
-import '../constants/app_strings.dart';
 
 class AppTheme {
-  // Light ThemeData
-  static final ThemeData lightTheme = ThemeData(
+  // Light ThemeData with environment-based colors
+  static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
+      seedColor: AppThemeColors.primary,
       brightness: Brightness.light,
     ),
-    scaffoldBackgroundColor: AppColors.lightBackground,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.lightSurface,
-      foregroundColor: AppColors.lightOnSurface,
+    scaffoldBackgroundColor: AppThemeColors.lightBackground,
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppThemeColors.lightSurface,
+      foregroundColor: AppThemeColors.lightOnSurface,
       elevation: 0,
       centerTitle: true,
     ),
     cardTheme: CardTheme(
-      color: AppColors.lightSurface,
-      shadowColor: AppColors.lightCardShadow,
+      color: AppThemeColors.lightSurface,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+        borderRadius: BorderRadius.circular(AppSizes.radiusMD),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
+        backgroundColor: AppThemeColors.primary,
+        foregroundColor: AppThemeColors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMD),
         ),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.spacingLarge,
-          vertical: AppSizes.spacingMedium,
+          horizontal: AppSizes.paddingLG,
+          vertical: AppSizes.paddingMD,
         ),
       ),
     ),
-    textTheme: const TextTheme(
-      headlineLarge: TextStyle(
-        fontSize: AppSizes.fontSizeHeadline1,
-        fontWeight: FontWeight.bold,
-        fontFamily: AppTheme.fontInter,
-      ),
-      headlineMedium: TextStyle(
-        fontSize: AppSizes.fontSizeHeadline2,
-        fontWeight: FontWeight.bold,
-        fontFamily: AppTheme.fontInter,
-      ),
-      headlineSmall: TextStyle(
-        fontSize: AppSizes.fontSizeHeadline3,
-        fontWeight: FontWeight.w600,
-        fontFamily: AppTheme.fontInter,
-      ),
-      bodyLarge: TextStyle(
-        fontSize: AppSizes.fontSizeLarge,
-        fontWeight: FontWeight.normal,
-        fontFamily: AppTheme.fontInter,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: AppSizes.fontSizeMedium,
-        fontWeight: FontWeight.normal,
-        fontFamily: AppTheme.fontInter,
-      ),
-      bodySmall: TextStyle(
-        fontSize: AppSizes.fontSizeSmall,
-        fontWeight: FontWeight.normal,
-        fontFamily: AppTheme.fontInter,
+    textTheme: GoogleFonts.interTextTheme(
+      const TextTheme(
+        headlineLarge: TextStyle(
+          fontSize: AppSizes.fontXXXL,
+          fontWeight: FontWeight.bold,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: AppSizes.fontXXL,
+          fontWeight: FontWeight.bold,
+        ),
+        headlineSmall: TextStyle(
+          fontSize: AppSizes.fontXL,
+          fontWeight: FontWeight.w600,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: AppSizes.fontLG,
+          fontWeight: FontWeight.normal,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: AppSizes.fontMD,
+          fontWeight: FontWeight.normal,
+        ),
+        bodySmall: TextStyle(
+          fontSize: AppSizes.fontSM,
+          fontWeight: FontWeight.normal,
+        ),
       ),
     ),
   );
 
-  // Dark ThemeData
-  static final ThemeData darkTheme = ThemeData(
+  // Dark ThemeData with environment-based colors
+  static ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
+      seedColor: AppThemeColors.primary,
       brightness: Brightness.dark,
     ),
-    scaffoldBackgroundColor: AppColors.darkBackground,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.darkSurface,
-      foregroundColor: AppColors.darkOnSurface,
+    scaffoldBackgroundColor: AppThemeColors.darkBackground,
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppThemeColors.darkSurface,
+      foregroundColor: AppThemeColors.darkOnSurface,
       elevation: 0,
       centerTitle: true,
     ),
     cardTheme: CardTheme(
-      color: AppColors.darkSurface,
-      shadowColor: AppColors.darkCardShadow,
+      color: AppThemeColors.darkSurface,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+        borderRadius: BorderRadius.circular(AppSizes.radiusMD),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
+        backgroundColor: AppThemeColors.primary,
+        foregroundColor: AppThemeColors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMD),
         ),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.spacingLarge,
-          vertical: AppSizes.spacingMedium,
+          horizontal: AppSizes.paddingLG,
+          vertical: AppSizes.paddingMD,
         ),
       ),
     ),
-    textTheme: const TextTheme(
-      headlineLarge: TextStyle(
-        fontSize: AppSizes.fontSizeHeadline1,
-        fontWeight: FontWeight.bold,
-        fontFamily: AppTheme.fontInter,
-      ),
-      headlineMedium: TextStyle(
-        fontSize: AppSizes.fontSizeHeadline2,
-        fontWeight: FontWeight.bold,
-        fontFamily: AppTheme.fontInter,
-      ),
-      headlineSmall: TextStyle(
-        fontSize: AppSizes.fontSizeHeadline3,
-        fontWeight: FontWeight.w600,
-        fontFamily: AppTheme.fontInter,
-      ),
-      bodyLarge: TextStyle(
-        fontSize: AppSizes.fontSizeLarge,
-        fontWeight: FontWeight.normal,
-        fontFamily: AppTheme.fontInter,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: AppSizes.fontSizeMedium,
-        fontWeight: FontWeight.normal,
-        fontFamily: AppTheme.fontInter,
-      ),
-      bodySmall: TextStyle(
-        fontSize: AppSizes.fontSizeSmall,
-        fontWeight: FontWeight.normal,
-        fontFamily: AppTheme.fontInter,
+    textTheme: GoogleFonts.interTextTheme(
+      const TextTheme(
+        headlineLarge: TextStyle(
+          fontSize: AppSizes.fontXXXL,
+          fontWeight: FontWeight.bold,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: AppSizes.fontXXL,
+          fontWeight: FontWeight.bold,
+        ),
+        headlineSmall: TextStyle(
+          fontSize: AppSizes.fontXL,
+          fontWeight: FontWeight.w600,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: AppSizes.fontLG,
+          fontWeight: FontWeight.normal,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: AppSizes.fontMD,
+          fontWeight: FontWeight.normal,
+        ),
+        bodySmall: TextStyle(
+          fontSize: AppSizes.fontSM,
+          fontWeight: FontWeight.normal,
+        ),
       ),
     ),
   );
-
-  // Font family name used throughout the app
-  static const String fontInter = 'Inter';
 }
 
 // Riverpod provider for theme mode management

@@ -16,9 +16,14 @@ class FirebaseStorageService {
       final ref = _storage.ref().child(path);
       final uploadTask = await ref.putFile(
         file,
-        metadata: metadata ?? const SettableMetadata(
-          contentType: _getContentType(file.path),
-        ),
+        metadata != null
+            ? SettableMetadata(
+                contentType: _getContentType(file.path),
+                customMetadata: metadata,
+              )
+            : SettableMetadata(
+                contentType: _getContentType(file.path),
+              ),
       );
 
       final snapshot = await uploadTask;

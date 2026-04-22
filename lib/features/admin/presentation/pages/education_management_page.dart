@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/widgets/responsive_builder.dart';
-import '../../../../../core/widgets/responsive_container.dart';
-import '../../../../../core/widgets/responsive_row.dart';
-import '../../../../../core/widgets/responsive_column.dart';
 import '../widgets/admin_form_components.dart';
 
 class EducationManagementPage extends ConsumerStatefulWidget {
@@ -42,7 +38,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
       body: ResponsiveBuilder(
         mobile: _buildMobileLayout(),
         tablet: _buildTabletLayout(),
@@ -166,7 +162,8 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
 
   Widget _buildEducationCard(int index, Map<String, dynamic> education) {
     return ResponsiveContainer(
-      margin: const EdgeInsets.only(bottom: AppSizes.spacingMD),
+      mobilePadding: const EdgeInsets.only(bottom: AppSizes.spacingMD),
+      desktopPadding: const EdgeInsets.only(bottom: AppSizes.spacingMD),
       mobileDecoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusMD),
@@ -193,7 +190,6 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
                 Expanded(
                   child: AppText.medium(
                     education['degree'] ?? 'Unknown Degree',
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(width: AppSizes.spacingSM),
@@ -220,7 +216,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 
@@ -248,8 +244,8 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
 
   void _showAddEducationDialog() {
     showDialog(
-      context: navigatorKey.currentContext!,
-      builder: (context) {
+      context: context,
+      builder: (dialogContext) {
         return AlertDialog(
           title: const Text('Add Education'),
           content: SizedBox(
@@ -278,6 +274,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
                   children: [
                     Expanded(
                       child: AdminFormComponents.buildDateField(
+                        context: dialogContext,
                         label: 'Start Date',
                         selectedDate: _parseDate(_startDateController.text),
                         onChanged: (date) {
@@ -288,6 +285,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
                     const SizedBox(width: AppSizes.spacingMD),
                     Expanded(
                       child: AdminFormComponents.buildDateField(
+                        context: dialogContext,
                         label: 'End Date',
                         selectedDate: _parseDate(_endDateController.text),
                         onChanged: (date) {
@@ -310,12 +308,15 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: _addNewEducation,
+              onPressed: () {
+                _addNewEducation();
+                Navigator.of(dialogContext).pop();
+              },
               child: const Text('Add'),
             ),
           ],
@@ -361,8 +362,8 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
 
   void _showEditEducationDialog(int index) {
     showDialog(
-      context: navigatorKey.currentContext!,
-      builder: (context) {
+      context: context,
+      builder: (dialogContext) {
         return AlertDialog(
           title: const Text('Edit Education'),
           content: SizedBox(
@@ -391,6 +392,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
                   children: [
                     Expanded(
                       child: AdminFormComponents.buildDateField(
+                        context: dialogContext,
                         label: 'Start Date',
                         selectedDate: _parseDate(_startDateController.text),
                         onChanged: (date) {
@@ -401,6 +403,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
                     const SizedBox(width: AppSizes.spacingMD),
                     Expanded(
                       child: AdminFormComponents.buildDateField(
+                        context: dialogContext,
                         label: 'End Date',
                         selectedDate: _parseDate(_endDateController.text),
                         onChanged: (date) {
@@ -423,14 +426,14 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
                 _updateEducationFromDialog(index);
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Update'),
             ),
@@ -490,7 +493,8 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
     }
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
   }
 
@@ -522,7 +526,7 @@ class _EducationManagementPageState extends ConsumerState<EducationManagementPag
 
   Future<void> _saveEducationData() async {
     // TODO: Save education data to API/storage
-    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Education data saved successfully!'),
         backgroundColor: AppColors.success,

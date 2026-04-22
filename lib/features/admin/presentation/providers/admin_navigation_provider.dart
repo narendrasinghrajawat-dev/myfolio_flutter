@@ -51,7 +51,7 @@ class AdminNavigationNotifier extends StateNotifier<AdminNavigationState> {
   }
 }
 
-final adminNavigationProvider = StateNotifierProvider<AdminNavigationNotifier>((ref) {
+final adminNavigationProvider = StateNotifierProvider<AdminNavigationNotifier, AdminNavigationState>((ref) {
   return AdminNavigationNotifier();
 });
 

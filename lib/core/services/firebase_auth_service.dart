@@ -21,7 +21,7 @@ class FirebaseAuthService {
         email: email,
         password: password,
       );
-      return result.userCredential;
+      return result;
     } catch (e) {
       throw Exception('Failed to sign in: ${e.toString()}');
     }
@@ -44,7 +44,7 @@ class FirebaseAuthService {
         await result.user?.updateDisplayName(displayName);
       }
       
-      return result.userCredential;
+      return result;
     } catch (e) {
       throw Exception('Failed to register: ${e.toString()}');
     }
@@ -76,17 +76,10 @@ class FirebaseAuthService {
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        final updates = <String, dynamic>{};
-        
-        if (displayName != null && displayName!.isNotEmpty) {
-          updates['displayName'] = displayName;
-        }
-        
-        if (photoURL != null && photoURL!.isNotEmpty) {
-          updates['photoURL'] = photoURL;
-        }
-        
-        await user!.updateProfile(updates);
+        await user!.updateProfile(
+          displayName: displayName?.isNotEmpty == true ? displayName : null,
+          photoURL: photoURL?.isNotEmpty == true ? photoURL : null,
+        );
       }
     } catch (e) {
       throw Exception('Failed to update profile: ${e.toString()}');

@@ -445,7 +445,6 @@ abstract final class ApiUrls {
   static const String externalMondayAPI = 'https://api.monday.com/v2';
   static const String externalClickUpAPI = 'https://api.clickup.com/api/v2';
   static const String externalTodoistAPI = 'https://api.todoist.com/rest/v2';
-  static const String externalTrelloAPI = 'https://api.trello.com/1';
   static const String externalBasecampAPI = 'https://basecamp.com/api/v1';
   static const String externalHubSpotAPI = 'https://api.hubapi.com';
   static const String externalSalesforceAPI = 'https://api.salesforce.com';

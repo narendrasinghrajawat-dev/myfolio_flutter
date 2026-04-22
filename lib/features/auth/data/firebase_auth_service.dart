@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../domain/auth_repository.dart';
 import '../domain/user_entity.dart';
 import '../../../core/exceptions/app_exceptions.dart';
@@ -87,6 +87,9 @@ class FirebaseAuthService implements AuthRepository {
   Future<UserEntity> signInWithGoogle() async {
     try {
       final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw const AuthenticationException('Google sign in was cancelled');
+      }
       final googleAuth = await googleUser.authentication;
       
       final credential = GoogleAuthProvider.credential(
@@ -108,7 +111,7 @@ class FirebaseAuthService implements AuthRepository {
       
       UserEntity userEntity;
       if (userDoc.exists) {
-        userEntity = UserEntity.fromJson(userDoc.data()!);
+        userEntity = UserEntityExtension.fromJson(userDoc.data()!);
       } else {
         userEntity = UserEntity(
           id: result.user!.uid,
@@ -138,6 +141,19 @@ class FirebaseAuthService implements AuthRepository {
     }
   }
   
+  Future<UserEntity> _getUserEntity(User user) async {
+    final userDoc = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      throw const AuthenticationException('User not found in Firestore');
+    }
+
+    return UserEntityExtension.fromJson(userDoc.data()!);
+  }
+
   @override
   Future<void> signOut() async {
     try {
@@ -161,7 +177,7 @@ class FirebaseAuthService implements AuthRepository {
       
       if (!userDoc.exists) return null;
       
-      return UserEntity.fromJson(userDoc.data()!);
+      return UserEntityExtension.fromJson(userDoc.data()!);
     } catch (e) {
       throw CacheException('Failed to get current user: $e');
     }
@@ -202,7 +218,7 @@ class FirebaseAuthService implements AuthRepository {
         
         if (!userDoc.exists) return null;
         
-        return UserEntity.fromJson(userDoc.data()!);
+        return UserEntityExtension.fromJson(userDoc.data()!);
       } catch (e) {
         return null;
       }

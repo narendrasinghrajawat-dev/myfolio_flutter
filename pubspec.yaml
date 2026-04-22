@@ -1,4 +1,4 @@
-name: myfolio_flutter
+name: codewithnarendra
 description: "A personal portfolio Flutter application with clean architecture and Riverpod."
 publish_to: 'none'
 
@@ -22,6 +22,7 @@ dependencies:
   # Authentication
   firebase_core: ^3.8.0
   firebase_auth: ^5.3.3
+  cloud_firestore: ^5.5.0
   google_sign_in: ^6.2.1
   
   # Networking

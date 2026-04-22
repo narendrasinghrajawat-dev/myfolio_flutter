@@ -9,6 +9,7 @@ class UserModel extends UserEntity {
     super.emailVerified,
     super.createdAt,
     super.lastLoginAt,
+    super.isAdmin,
   });
 
   factory UserModel.fromFirebaseUser(user) {
@@ -36,6 +37,7 @@ class UserModel extends UserEntity {
       lastLoginAt: map['lastLoginAt'] != null
           ? DateTime.parse(map['lastLoginAt'] as String)
           : null,
+      isAdmin: map['isAdmin'] as bool?,
     );
   }
 
@@ -48,6 +50,7 @@ class UserModel extends UserEntity {
       'emailVerified': emailVerified,
       'createdAt': createdAt?.toIso8601String(),
       'lastLoginAt': lastLoginAt?.toIso8601String(),
+      'isAdmin': isAdmin,
     };
   }
 
@@ -60,6 +63,7 @@ class UserModel extends UserEntity {
       emailVerified: emailVerified,
       createdAt: createdAt,
       lastLoginAt: lastLoginAt,
+      isAdmin: isAdmin,
     );
   }
 }

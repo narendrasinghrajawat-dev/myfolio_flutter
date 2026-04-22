@@ -17,12 +17,11 @@ class ProjectNotifier extends StateNotifier<ProjectState> {
     required CreateProjectUseCase createProjectUseCase,
     required UpdateProjectUseCase updateProjectUseCase,
     required DeleteProjectUseCase deleteProjectUseCase,
-  }) : super(const ProjectState(status: ProjectStatus.initial)) {
-    _getProjectsUseCase = getProjectsUseCase;
-    _createProjectUseCase = createProjectUseCase;
-    _updateProjectUseCase = updateProjectUseCase;
-    _deleteProjectUseCase = deleteProjectUseCase;
-  }
+  })  : _getProjectsUseCase = getProjectsUseCase,
+      _createProjectUseCase = createProjectUseCase,
+      _updateProjectUseCase = updateProjectUseCase,
+      _deleteProjectUseCase = deleteProjectUseCase,
+      super(const ProjectState(status: ProjectStatus.initial));
 
   Future<void> getProjects({int page = 1}) async {
     if (page == 1) {

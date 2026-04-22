@@ -1,9 +1,10 @@
+import 'package:codewithnarendra/core/constants/app_colors.dart';
+import 'package:codewithnarendra/core/constants/app_icons.dart';
+import 'package:codewithnarendra/core/constants/app_sizes.dart';
+import 'package:codewithnarendra/core/constants/app_strings.dart';
+import 'package:codewithnarendra/features/about/presentation/providers/about_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_icons.dart';
 import '../providers/about_provider.dart';
 
 class AboutScreen extends ConsumerWidget {
@@ -17,7 +18,7 @@ class AboutScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.navAbout),
-        backgroundColor: AppColors.transparent,
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: RefreshIndicator(

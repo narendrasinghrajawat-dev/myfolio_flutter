@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/constants/app_colors.dart';
-import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/widgets/responsive_builder.dart';
-import '../../../../../core/widgets/responsive_container.dart';
-import '../../../../../core/widgets/responsive_row.dart';
-import '../../../../../core/widgets/responsive_column.dart';
 import '../widgets/admin_form_components.dart';
 
 class ContactManagementPage extends ConsumerStatefulWidget {
@@ -38,7 +34,7 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
       body: ResponsiveBuilder(
         mobile: _buildMobileLayout(),
         tablet: _buildTabletLayout(),
@@ -161,9 +157,10 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
   }
 
   Widget _buildContactCard(int index, Map<String, dynamic> contact) {
-    return ResponsiveContainer(
-      margin: const EdgeInsets.only(bottom: AppSizes.spacingMD),
-      mobileDecoration: BoxDecoration(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSizes.spacingMD),
+      child: ResponsiveContainer(
+        mobileDecoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusMD),
         border: Border.all(color: AppColors.grey300),
@@ -189,7 +186,6 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
                 Expanded(
                   child: AppText.medium(
                     contact['name'] ?? 'Unknown Contact',
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(width: AppSizes.spacingSM),
@@ -217,10 +213,11 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
             const SizedBox(height: AppSizes.spacingSM),
             AppText.small(
               'Created: ${contact['createdAt'] ?? 'Unknown date'}',
-              color: AppColors.grey600,
+              style: TextStyle(color: AppColors.grey600), 
             ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -244,12 +241,12 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
           child: AppText.button('Add New Contact'),
         ),
       ),
-    );
+    );  
   }
 
   void _showAddContactDialog() {
     showDialog(
-      context: navigatorKey.currentContext!,
+      context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Add New Contact'),
@@ -334,7 +331,7 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
 
   void _showEditContactDialog(int index) {
     showDialog(
-      context: navigatorKey.currentContext!,
+      context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Edit Contact'),
@@ -440,7 +437,7 @@ class _ContactManagementPageState extends ConsumerState<ContactManagementPage> {
 
   Future<void> _saveContactData() async {
     // TODO: Save contact data to API/storage
-    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Contact data saved successfully!'),
         backgroundColor: AppColors.success,

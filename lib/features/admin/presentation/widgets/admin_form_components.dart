@@ -4,9 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/responsive_builder.dart';
-import '../../../../core/widgets/responsive_container.dart';
-import '../../../../core/widgets/responsive_row.dart';
-import '../../../../core/widgets/responsive_column.dart';
+
 
 class AdminFormComponents {
   // Text field with responsive padding and styling
@@ -61,9 +59,9 @@ class AdminFormComponents {
   // Dropdown field with responsive design
   static Widget buildDropdownField<T>({
     required String label,
-    required T value,
+    required T? value,
     required List<DropdownMenuItem<T>> items,
-    required ValueChanged<T> onChanged,
+    required ValueChanged<T?>? onChanged,
     String? hintText,
     IconData? prefixIcon,
   }) {
@@ -130,6 +128,7 @@ class AdminFormComponents {
 
   // Date picker with responsive design
   static Widget buildDateField({
+    required BuildContext context,
     required String label,
     required DateTime? selectedDate,
     required ValueChanged<DateTime?> onChanged,
@@ -142,7 +141,7 @@ class AdminFormComponents {
       child: InkWell(
         onTap: () async {
           final date = await showDatePicker(
-            context: navigatorKey.currentContext!,
+            context: context,
             initialDate: selectedDate,
             firstDate: DateTime(1900),
             lastDate: DateTime.now(),
@@ -229,7 +228,7 @@ class AdminFormComponents {
         border: Border.all(color: AppColors.grey300),
         borderRadius: BorderRadius.circular(AppSizes.radiusMD),
       ),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
@@ -357,7 +356,7 @@ class AdminFormComponents {
                     height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : AppText.medium(AppStrings.cancel),
+                : AppText.medium(AppStrings.actionCancel),
           ),
         ),
         Expanded(
@@ -383,7 +382,7 @@ class AdminFormComponents {
                       valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary),
                     ),
                   )
-                : AppText.medium(AppStrings.save),
+                : AppText.medium(AppStrings.actionSave),
           ),
         ),
       ],
