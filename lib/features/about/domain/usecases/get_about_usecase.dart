@@ -1,4 +1,3 @@
-import '../entities/about_entity.dart';
 import '../repositories/about_repository.dart';
 
 class GetAboutUseCase {
@@ -6,7 +5,7 @@ class GetAboutUseCase {
 
   GetAboutUseCase(this._repository);
 
-  Future<AboutEntity?> call() async {
-    return await _repository.getAbout();
+  Future<Map<String, dynamic>> call() async {
+    return await _repository.getAllAbout();
   }
 }

@@ -1,6 +1,5 @@
 import '../datasources/auth_remote_datasource.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../../domain/entities/user_entity.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
@@ -8,20 +7,18 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<UserEntity?> signInWithEmail(String email, String password) async {
+  Future<Map<String, dynamic>> signInWithEmail(String email, String password) async {
     try {
-      final userModel = await _remoteDataSource.signInWithEmail(email, password);
-      return userModel?.toEntity();
+      return await _remoteDataSource.signInWithEmail(email, password);
     } catch (e) {
       throw Exception('Sign in failed: ${e.toString()}');
     }
   }
 
   @override
-  Future<UserEntity?> registerWithEmail(String email, String password, String? displayName) async {
+  Future<Map<String, dynamic>> registerWithEmail(String email, String password, String firstName, String lastName, String displayName) async {
     try {
-      final userModel = await _remoteDataSource.registerWithEmail(email, password, displayName);
-      return userModel?.toEntity();
+      return await _remoteDataSource.registerWithEmail(email, password, firstName, lastName, displayName);
     } catch (e) {
       throw Exception('Registration failed: ${e.toString()}');
     }
@@ -46,46 +43,54 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserEntity?> getCurrentUser() async {
+  Future<Map<String, dynamic>> getCurrentUser() async {
     try {
-      final userModel = await _remoteDataSource.getCurrentUser();
-      return userModel?.toEntity();
+      return await _remoteDataSource.getCurrentUser();
     } catch (e) {
       throw Exception('Failed to get current user: ${e.toString()}');
     }
   }
 
   @override
-  Future<void> sendEmailVerification() async {
+  Future<void> sendEmailVerification(String token) async {
     try {
-      await _remoteDataSource.sendEmailVerification();
+      await _remoteDataSource.sendEmailVerification(token);
     } catch (e) {
       throw Exception('Email verification failed: ${e.toString()}');
     }
   }
 
   @override
-  Future<bool> isEmailVerified() async {
+  Future<void> forgotPassword(String email) async {
     try {
-      return await _remoteDataSource.isEmailVerified();
+      await _remoteDataSource.forgotPassword(email);
     } catch (e) {
-      throw Exception('Email verification check failed: ${e.toString()}');
+      throw Exception('Forgot password failed: ${e.toString()}');
     }
   }
 
   @override
-  Future<String?> getIdToken() async {
+  Future<void> resetPasswordWithToken(String token, String newPassword) async {
     try {
-      return await _remoteDataSource.getIdToken();
+      await _remoteDataSource.resetPasswordWithToken(token, newPassword);
     } catch (e) {
-      throw Exception('Failed to get ID token: ${e.toString()}');
+      throw Exception('Password reset with token failed: ${e.toString()}');
     }
   }
 
   @override
-  Future<void> updateProfile({String? displayName, String? photoURL}) async {
+  Future<void> changePassword(String currentPassword, String newPassword) async {
     try {
-      await _remoteDataSource.updateProfile(displayName: displayName, photoURL: photoURL);
+      await _remoteDataSource.changePassword(currentPassword, newPassword);
+    } catch (e) {
+      throw Exception('Change password failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data) async {
+    try {
+      return await _remoteDataSource.updateProfile(data);
     } catch (e) {
       throw Exception('Profile update failed: ${e.toString()}');
     }

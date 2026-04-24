@@ -1,4 +1,3 @@
-import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
 
 class SignInUseCase {
@@ -6,7 +5,7 @@ class SignInUseCase {
 
   SignInUseCase(this._repository);
 
-  Future<UserEntity?> call(String email, String password) async {
+  Future<Map<String, dynamic>> call(String email, String password) async {
     if (email.isEmpty) {
       throw Exception('Email is required');
     }

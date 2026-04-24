@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/skill_entity.dart';
 import '../../domain/usecases/get_skills_usecase.dart';
 import '../../domain/usecases/create_skill_usecase.dart';
 import '../../domain/usecases/update_skill_usecase.dart';
@@ -40,14 +39,14 @@ class SkillNotifier extends StateNotifier<SkillState> {
     }
   }
 
-  Future<void> createSkill(SkillEntity skill) async {
+  Future<void> createSkill(Map<String, dynamic> data) async {
     state = state.copyWith(status: SkillStatus.loading);
     
     try {
-      final createdSkill = await _createSkillUseCase(skill);
+      final createdSkill = await _createSkillUseCase(data);
       state = state.copyWith(
         status: SkillStatus.loaded,
-        skills: [...state.skills, createdSkill],
+        skills: createdSkill,
       );
     } catch (e) {
       state = state.copyWith(
@@ -57,17 +56,14 @@ class SkillNotifier extends StateNotifier<SkillState> {
     }
   }
 
-  Future<void> updateSkill(SkillEntity skill) async {
+  Future<void> updateSkill(String id, Map<String, dynamic> data) async {
     state = state.copyWith(status: SkillStatus.loading);
     
     try {
-      final updatedSkill = await _updateSkillUseCase(skill);
-      final updatedSkills = state.skills.map((s) => 
-        s.id == skill.id ? updatedSkill : s
-      ).toList();
+      final updatedSkill = await _updateSkillUseCase(id, data);
       state = state.copyWith(
         status: SkillStatus.loaded,
-        skills: updatedSkills,
+        skills: updatedSkill,
       );
     } catch (e) {
       state = state.copyWith(
@@ -82,10 +78,9 @@ class SkillNotifier extends StateNotifier<SkillState> {
     
     try {
       await _deleteSkillUseCase(id);
-      final updatedSkills = state.skills.where((s) => s.id != id).toList();
       state = state.copyWith(
         status: SkillStatus.loaded,
-        skills: updatedSkills,
+        skills: null,
       );
     } catch (e) {
       state = state.copyWith(
@@ -95,7 +90,7 @@ class SkillNotifier extends StateNotifier<SkillState> {
     }
   }
 
-  void selectSkill(SkillEntity skill) {
+  void selectSkill(Map<String, dynamic> skill) {
     state = state.copyWith(selectedSkill: skill);
   }
 

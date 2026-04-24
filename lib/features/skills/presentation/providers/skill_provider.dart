@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/datasources/skill_remote_datasource.dart';
 import '../../data/repositories/skill_repository_impl.dart';
+import '../../data/services/skill_api_service.dart';
 import '../../domain/repositories/skill_repository.dart';
 import '../../domain/usecases/get_skills_usecase.dart';
 import '../../domain/usecases/create_skill_usecase.dart';
@@ -8,10 +9,18 @@ import '../../domain/usecases/update_skill_usecase.dart';
 import '../../domain/usecases/delete_skill_usecase.dart';
 import 'skill_notifier.dart';
 import 'skill_state.dart';
+import '../../../../core/services/network_service.dart';
+
+// API Service Provider
+final skillApiServiceProvider = Provider<SkillApiService>((ref) {
+  final networkService = ref.watch(networkServiceProvider);
+  return SkillApiService(networkService);
+});
 
 // Remote Data Source Provider
 final skillRemoteDataSourceProvider = Provider<SkillRemoteDataSource>((ref) {
-  return SkillRemoteDataSourceImpl(null);
+  final skillApiService = ref.watch(skillApiServiceProvider);
+  return SkillRemoteDataSourceImpl(skillApiService);
 });
 
 // Repository Provider

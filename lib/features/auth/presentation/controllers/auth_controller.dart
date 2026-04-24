@@ -109,6 +109,7 @@ class AuthController extends StateNotifier<AuthState> {
     required String password,
     required String firstName,
     required String lastName,
+    String? displayName,
   }) async {
     try {
       state = state.copyWith(status: AuthStatus.loading, errorMessage: null);
@@ -129,10 +130,10 @@ class AuthController extends StateNotifier<AuthState> {
       // Store tokens locally
       // TODO: Store tokens securely
 
-      final adminData = response['user'] as Map<String, dynamic>;
+      final userData = response['user'] as Map<String, dynamic>;
       state = state.copyWith(
         status: AuthStatus.authenticated,
-        user: UserModel.fromMap(adminData),
+        user: UserModel.fromMap(userData),
       );
 
       return true;

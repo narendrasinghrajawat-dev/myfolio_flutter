@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/education_entity.dart';
 import '../../domain/usecases/get_education_usecase.dart';
 import '../../domain/usecases/create_education_usecase.dart';
 import '../../domain/usecases/update_education_usecase.dart';
@@ -40,14 +39,14 @@ class EducationNotifier extends StateNotifier<EducationState> {
     }
   }
 
-  Future<void> createEducation(EducationEntity education) async {
+  Future<void> createEducation(Map<String, dynamic> data) async {
     state = state.copyWith(status: EducationStatus.loading);
     
     try {
-      final createdEducation = await _createEducationUseCase(education);
+      final createdEducation = await _createEducationUseCase(data);
       state = state.copyWith(
         status: EducationStatus.loaded,
-        educationList: [...state.educationList, createdEducation],
+        educationList: createdEducation,
       );
     } catch (e) {
       state = state.copyWith(
@@ -57,17 +56,14 @@ class EducationNotifier extends StateNotifier<EducationState> {
     }
   }
 
-  Future<void> updateEducation(EducationEntity education) async {
+  Future<void> updateEducation(String id, Map<String, dynamic> data) async {
     state = state.copyWith(status: EducationStatus.loading);
     
     try {
-      final updatedEducation = await _updateEducationUseCase(education);
-      final updatedList = state.educationList.map((edu) => 
-        edu.id == education.id ? updatedEducation : edu
-      ).toList();
+      final updatedEducation = await _updateEducationUseCase(id, data);
       state = state.copyWith(
         status: EducationStatus.loaded,
-        educationList: updatedList,
+        educationList: updatedEducation,
       );
     } catch (e) {
       state = state.copyWith(
@@ -82,10 +78,9 @@ class EducationNotifier extends StateNotifier<EducationState> {
     
     try {
       await _deleteEducationUseCase(id);
-      final updatedList = state.educationList.where((edu) => edu.id != id).toList();
       state = state.copyWith(
         status: EducationStatus.loaded,
-        educationList: updatedList,
+        educationList: null,
       );
     } catch (e) {
       state = state.copyWith(
@@ -95,7 +90,7 @@ class EducationNotifier extends StateNotifier<EducationState> {
     }
   }
 
-  void selectEducation(EducationEntity education) {
+  void selectEducation(Map<String, dynamic> education) {
     state = state.copyWith(selectedEducation: education);
   }
 

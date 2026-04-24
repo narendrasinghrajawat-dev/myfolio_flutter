@@ -1,57 +1,41 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import '../models/user_model.dart';
+import '../services/auth_api_service.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<UserModel?> signInWithEmail(String email, String password);
-  Future<UserModel?> registerWithEmail(String email, String password, String? displayName);
+  Future<Map<String, dynamic>> signInWithEmail(String email, String password);
+  Future<Map<String, dynamic>> registerWithEmail(String email, String password, String firstName, String lastName, String displayName);
   Future<void> signOut();
   Future<void> resetPassword(String email);
-  Future<UserModel?> getCurrentUser();
-  Future<void> sendEmailVerification();
-  Future<bool> isEmailVerified();
-  Future<String?> getIdToken();
-  Future<void> updateProfile({String? displayName, String? photoURL});
+  Future<Map<String, dynamic>> getCurrentUser();
+  Future<void> sendEmailVerification(String token);
+  Future<void> forgotPassword(String email);
+  Future<void> resetPasswordWithToken(String token, String newPassword);
+  Future<void> changePassword(String currentPassword, String newPassword);
+  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final FirebaseAuth _firebaseAuth;
+  final AuthApiService _authApiService;
 
-  AuthRemoteDataSourceImpl(this._firebaseAuth);
+  AuthRemoteDataSourceImpl(this._authApiService);
 
   @override
-  Future<UserModel?> signInWithEmail(String email, String password) async {
+  Future<Map<String, dynamic>> signInWithEmail(String email, String password) async {
     try {
-      final result = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      
-      final user = result.user;
-      if (user != null) {
-        return UserModel.fromFirebaseUser(user);
-      }
-      return null;
+      return await _authApiService.login(email: email, password: password);
     } catch (e) {
       throw Exception('Failed to sign in: ${e.toString()}');
     }
   }
 
   @override
-  Future<UserModel?> registerWithEmail(String email, String password, String? displayName) async {
+  Future<Map<String, dynamic>> registerWithEmail(String email, String password, String firstName, String lastName, String displayName) async {
     try {
-      final result = await _firebaseAuth.createUserWithEmailAndPassword(
+      return await _authApiService.register(
         email: email,
         password: password,
+        firstName: firstName,
+        lastName: lastName,
       );
-      
-      final user = result.user;
-      if (user != null) {
-        if (displayName != null && displayName!.isNotEmpty) {
-          await user.updateDisplayName(displayName);
-        }
-        return UserModel.fromFirebaseUser(user);
-      }
-      return null;
     } catch (e) {
       throw Exception('Failed to register: ${e.toString()}');
     }
@@ -60,7 +44,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> signOut() async {
     try {
-      await _firebaseAuth.signOut();
+      await _authApiService.logout();
     } catch (e) {
       throw Exception('Failed to sign out: ${e.toString()}');
     }
@@ -69,64 +53,64 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> resetPassword(String email) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      await _authApiService.forgotPassword(email);
     } catch (e) {
       throw Exception('Failed to send reset email: ${e.toString()}');
     }
   }
 
   @override
-  Future<UserModel?> getCurrentUser() async {
+  Future<Map<String, dynamic>> getCurrentUser() async {
     try {
-      final user = _firebaseAuth.currentUser;
-      return user != null ? UserModel.fromFirebaseUser(user) : null;
+      return await _authApiService.getCurrentUser();
     } catch (e) {
       throw Exception('Failed to get current user: ${e.toString()}');
     }
   }
 
   @override
-  Future<void> sendEmailVerification() async {
+  Future<void> sendEmailVerification(String token) async {
     try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null && !user.emailVerified) {
-        await user.sendEmailVerification();
-      }
+      await _authApiService.verifyEmail(token);
     } catch (e) {
       throw Exception('Failed to send verification email: ${e.toString()}');
     }
   }
 
   @override
-  Future<bool> isEmailVerified() async {
+  Future<void> forgotPassword(String email) async {
     try {
-      final user = _firebaseAuth.currentUser;
-      return user?.emailVerified ?? false;
+      await _authApiService.forgotPassword(email);
     } catch (e) {
-      throw Exception('Failed to check email verification: ${e.toString()}');
+      throw Exception('Failed to send forgot password email: ${e.toString()}');
     }
   }
 
   @override
-  Future<String?> getIdToken() async {
+  Future<void> resetPasswordWithToken(String token, String newPassword) async {
     try {
-      final user = _firebaseAuth.currentUser;
-      return await user?.getIdToken();
+      await _authApiService.resetPassword(token: token, newPassword: newPassword);
     } catch (e) {
-      throw Exception('Failed to get ID token: ${e.toString()}');
+      throw Exception('Failed to reset password: ${e.toString()}');
     }
   }
 
   @override
-  Future<void> updateProfile({String? displayName, String? photoURL}) async {
+  Future<void> changePassword(String currentPassword, String newPassword) async {
     try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
-        await user.updateProfile(
-          displayName: displayName?.isNotEmpty == true ? displayName : null,
-          photoURL: photoURL?.isNotEmpty == true ? photoURL : null,
-        );
-      }
+      await _authApiService.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+    } catch (e) {
+      throw Exception('Failed to change password: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data) async {
+    try {
+      return await _authApiService.updateProfile(data);
     } catch (e) {
       throw Exception('Failed to update profile: ${e.toString()}');
     }

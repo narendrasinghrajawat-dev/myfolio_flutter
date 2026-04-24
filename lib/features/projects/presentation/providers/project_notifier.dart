@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/project_entity.dart';
 import '../../domain/usecases/get_projects_usecase.dart';
 import '../../domain/usecases/create_project_usecase.dart';
 import '../../domain/usecases/update_project_usecase.dart';
@@ -23,42 +22,14 @@ class ProjectNotifier extends StateNotifier<ProjectState> {
       _deleteProjectUseCase = deleteProjectUseCase,
       super(const ProjectState(status: ProjectStatus.initial));
 
-  Future<void> getProjects({int page = 1}) async {
-    if (page == 1) {
-      state = state.copyWith(status: ProjectStatus.loading);
-    }
-    
-    try {
-      final projects = await _getProjectsUseCase(page: page);
-      if (page == 1) {
-        state = state.copyWith(
-          status: ProjectStatus.loaded,
-          projects: projects,
-          currentPage: page,
-        );
-      } else {
-        state = state.copyWith(
-          status: ProjectStatus.loaded,
-          projects: [...state.projects, ...projects],
-          currentPage: page,
-        );
-      }
-    } catch (e) {
-      state = state.copyWith(
-        status: ProjectStatus.error,
-        errorMessage: e.toString(),
-      );
-    }
-  }
-
-  Future<void> createProject(ProjectEntity project) async {
+  Future<void> getProjects() async {
     state = state.copyWith(status: ProjectStatus.loading);
     
     try {
-      final createdProject = await _createProjectUseCase(project);
+      final projects = await _getProjectsUseCase();
       state = state.copyWith(
         status: ProjectStatus.loaded,
-        projects: [createdProject, ...state.projects],
+        projects: projects,
       );
     } catch (e) {
       state = state.copyWith(
@@ -68,17 +39,31 @@ class ProjectNotifier extends StateNotifier<ProjectState> {
     }
   }
 
-  Future<void> updateProject(ProjectEntity project) async {
+  Future<void> createProject(Map<String, dynamic> data) async {
     state = state.copyWith(status: ProjectStatus.loading);
     
     try {
-      final updatedProject = await _updateProjectUseCase(project);
-      final updatedProjects = state.projects.map((p) => 
-        p.id == project.id ? updatedProject : p
-      ).toList();
+      final createdProject = await _createProjectUseCase(data);
       state = state.copyWith(
         status: ProjectStatus.loaded,
-        projects: updatedProjects,
+        projects: createdProject,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: ProjectStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> updateProject(String id, Map<String, dynamic> data) async {
+    state = state.copyWith(status: ProjectStatus.loading);
+    
+    try {
+      final updatedProject = await _updateProjectUseCase(id, data);
+      state = state.copyWith(
+        status: ProjectStatus.loaded,
+        projects: updatedProject,
       );
     } catch (e) {
       state = state.copyWith(
@@ -93,10 +78,9 @@ class ProjectNotifier extends StateNotifier<ProjectState> {
     
     try {
       await _deleteProjectUseCase(id);
-      final updatedProjects = state.projects.where((p) => p.id != id).toList();
       state = state.copyWith(
         status: ProjectStatus.loaded,
-        projects: updatedProjects,
+        projects: null,
       );
     } catch (e) {
       state = state.copyWith(
@@ -106,7 +90,7 @@ class ProjectNotifier extends StateNotifier<ProjectState> {
     }
   }
 
-  void selectProject(ProjectEntity project) {
+  void selectProject(Map<String, dynamic> project) {
     state = state.copyWith(selectedProject: project);
   }
 

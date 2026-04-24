@@ -77,8 +77,8 @@ class AuthApiService {
   /// Update user profile
   Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data) async {
     try {
-      final response = await _networkService.put<Map<String, dynamic>>(
-        ApiEndpoints.updateProfile,
+      final response = await _networkService.post<Map<String, dynamic>>(
+        ApiEndpoints.getCurrentUser,
         data: data,
       );
       return response as Map<String, dynamic>;

@@ -1,57 +1,49 @@
-import '../models/education_model.dart';
+import '../services/education_api_service.dart';
 
 abstract class EducationRemoteDataSource {
-  Future<List<EducationModel>> getEducation();
-  Future<EducationModel> getEducationById(String id);
-  Future<EducationModel> createEducation(EducationModel education);
-  Future<EducationModel> updateEducation(EducationModel education);
+  Future<Map<String, dynamic>> getAllEducation();
+  Future<Map<String, dynamic>> getEducationById(String id);
+  Future<Map<String, dynamic>> createEducation(Map<String, dynamic> data);
+  Future<Map<String, dynamic>> updateEducation(String id, Map<String, dynamic> data);
   Future<void> deleteEducation(String id);
-  Future<List<EducationModel>> getEducationByType(String type);
-  Future<List<EducationModel>> searchEducation(String query);
 }
 
 class EducationRemoteDataSourceImpl implements EducationRemoteDataSource {
-  final dynamic _httpClient;
+  final EducationApiService _educationApiService;
 
-  EducationRemoteDataSourceImpl(this._httpClient);
+  EducationRemoteDataSourceImpl(this._educationApiService);
 
   @override
-  Future<List<EducationModel>> getEducation() async {
+  Future<Map<String, dynamic>> getAllEducation() async {
     try {
-      final response = await _httpClient.get('/education');
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => EducationModel.fromJson(json))
-          .toList();
+      return await _educationApiService.getAllEducation();
     } catch (e) {
       throw Exception('Failed to get education: ${e.toString()}');
     }
   }
 
   @override
-  Future<EducationModel> getEducationById(String id) async {
+  Future<Map<String, dynamic>> getEducationById(String id) async {
     try {
-      final response = await _httpClient.get('/education/$id');
-      return EducationModel.fromJson(response.data['data']);
+      return await _educationApiService.getEducationById(id);
     } catch (e) {
-      throw Exception('Failed to get education by id: ${e.toString()}');
+      throw Exception('Failed to get education: ${e.toString()}');
     }
   }
 
   @override
-  Future<EducationModel> createEducation(EducationModel education) async {
+  Future<Map<String, dynamic>> createEducation(Map<String, dynamic> data) async {
     try {
-      final response = await _httpClient.post('/education', data: education.toJson());
-      return EducationModel.fromJson(response.data['data']);
+      return await _educationApiService.createEducation(data);
     } catch (e) {
       throw Exception('Failed to create education: ${e.toString()}');
     }
   }
 
   @override
-  Future<EducationModel> updateEducation(EducationModel education) async {
+  Future<Map<String, dynamic>> updateEducation(String id, Map<String, dynamic> data) async {
     try {
-      final response = await _httpClient.put('/education/${education.id}', data: education.toJson());
-      return EducationModel.fromJson(response.data['data']);
+      return await _educationApiService.updateEducation(id, data);
     } catch (e) {
       throw Exception('Failed to update education: ${e.toString()}');
     }
@@ -60,35 +52,9 @@ class EducationRemoteDataSourceImpl implements EducationRemoteDataSource {
   @override
   Future<void> deleteEducation(String id) async {
     try {
-      await _httpClient.delete('/education/$id');
+      await _educationApiService.deleteEducation(id);
     } catch (e) {
       throw Exception('Failed to delete education: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<EducationModel>> getEducationByType(String type) async {
-    try {
-      final response = await _httpClient.get('/education/type/$type');
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => EducationModel.fromJson(json))
-          .toList();
-    } catch (e) {
-      throw Exception('Failed to get education by type: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<EducationModel>> searchEducation(String query) async {
-    try {
-      final response = await _httpClient.get('/education/search', queryParameters: {
-        'q': query,
-      });
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => EducationModel.fromJson(json))
-          .toList();
-    } catch (e) {
-      throw Exception('Failed to search education: ${e.toString()}');
     }
   }
 }

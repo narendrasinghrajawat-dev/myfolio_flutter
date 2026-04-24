@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/education_entity.dart';
 
 enum EducationStatus {
   initial,
@@ -10,21 +9,21 @@ enum EducationStatus {
 
 class EducationState extends Equatable {
   final EducationStatus status;
-  final List<EducationEntity> educationList;
-  final EducationEntity? selectedEducation;
+  final Map<String, dynamic>? educationList;
+  final Map<String, dynamic>? selectedEducation;
   final String? errorMessage;
 
   const EducationState({
     required this.status,
-    this.educationList = const [],
+    this.educationList,
     this.selectedEducation,
     this.errorMessage,
   });
 
   EducationState copyWith({
     EducationStatus? status,
-    List<EducationEntity>? educationList,
-    EducationEntity? selectedEducation,
+    Map<String, dynamic>? educationList,
+    Map<String, dynamic>? selectedEducation,
     String? errorMessage,
   }) {
     return EducationState(

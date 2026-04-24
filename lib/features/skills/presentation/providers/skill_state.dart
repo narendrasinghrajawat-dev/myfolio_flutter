@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/skill_entity.dart';
 
 enum SkillStatus {
   initial,
@@ -10,21 +9,21 @@ enum SkillStatus {
 
 class SkillState extends Equatable {
   final SkillStatus status;
-  final List<SkillEntity> skills;
-  final SkillEntity? selectedSkill;
+  final Map<String, dynamic>? skills;
+  final Map<String, dynamic>? selectedSkill;
   final String? errorMessage;
 
   const SkillState({
     required this.status,
-    this.skills = const [],
+    this.skills,
     this.selectedSkill,
     this.errorMessage,
   });
 
   SkillState copyWith({
     SkillStatus? status,
-    List<SkillEntity>? skills,
-    SkillEntity? selectedSkill,
+    Map<String, dynamic>? skills,
+    Map<String, dynamic>? selectedSkill,
     String? errorMessage,
   }) {
     return SkillState(

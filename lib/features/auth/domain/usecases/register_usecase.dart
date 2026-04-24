@@ -1,4 +1,3 @@
-import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
 
 class RegisterUseCase {
@@ -6,12 +5,18 @@ class RegisterUseCase {
 
   RegisterUseCase(this._repository);
 
-  Future<UserEntity?> call(String email, String password, String? displayName) async {
+  Future<Map<String, dynamic>> call(String email, String password, String firstName, String lastName, String displayName) async {
     if (email.isEmpty) {
       throw Exception('Email is required');
     }
     if (password.isEmpty) {
       throw Exception('Password is required');
+    }
+    if (firstName.isEmpty) {
+      throw Exception('First name is required');
+    }
+    if (lastName.isEmpty) {
+      throw Exception('Last name is required');
     }
     if (!_isValidEmail(email)) {
       throw Exception('Invalid email format');
@@ -23,7 +28,7 @@ class RegisterUseCase {
       throw Exception('Password must contain at least one letter and one number');
     }
 
-    return await _repository.registerWithEmail(email, password, displayName);
+    return await _repository.registerWithEmail(email, password, firstName, lastName, displayName);
   }
 
   bool _isValidEmail(String email) {

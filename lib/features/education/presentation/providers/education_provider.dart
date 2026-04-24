@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/datasources/education_remote_datasource.dart';
 import '../../data/repositories/education_repository_impl.dart';
+import '../../data/services/education_api_service.dart';
 import '../../domain/repositories/education_repository.dart';
 import '../../domain/usecases/get_education_usecase.dart';
 import '../../domain/usecases/create_education_usecase.dart';
@@ -8,10 +9,18 @@ import '../../domain/usecases/update_education_usecase.dart';
 import '../../domain/usecases/delete_education_usecase.dart';
 import 'education_notifier.dart';
 import 'education_state.dart';
+import '../../../../core/services/network_service.dart';
+
+// API Service Provider
+final educationApiServiceProvider = Provider<EducationApiService>((ref) {
+  final networkService = ref.watch(networkServiceProvider);
+  return EducationApiService(networkService);
+});
 
 // Remote Data Source Provider
 final educationRemoteDataSourceProvider = Provider<EducationRemoteDataSource>((ref) {
-  return EducationRemoteDataSourceImpl(null);
+  final educationApiService = ref.watch(educationApiServiceProvider);
+  return EducationRemoteDataSourceImpl(educationApiService);
 });
 
 // Repository Provider

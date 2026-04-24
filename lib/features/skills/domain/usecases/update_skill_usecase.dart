@@ -1,4 +1,3 @@
-import '../entities/skill_entity.dart';
 import '../repositories/skill_repository.dart';
 
 class UpdateSkillUseCase {
@@ -6,16 +5,16 @@ class UpdateSkillUseCase {
 
   UpdateSkillUseCase(this._repository);
 
-  Future<SkillEntity> call(SkillEntity skill) async {
-    if (skill.id.isEmpty) {
+  Future<Map<String, dynamic>> call(String id, Map<String, dynamic> data) async {
+    if (id.isEmpty) {
       throw Exception('Skill ID is required');
     }
-    if (skill.name.isEmpty) {
+    if (data['name'] == null || data['name'].toString().isEmpty) {
       throw Exception('Skill name is required');
     }
-    if (skill.level.isEmpty) {
+    if (data['level'] == null || data['level'].toString().isEmpty) {
       throw Exception('Skill level is required');
     }
-    return await _repository.updateSkill(skill);
+    return await _repository.updateSkill(id, data);
   }
 }

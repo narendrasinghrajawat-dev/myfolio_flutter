@@ -1,8 +1,5 @@
-import 'package:codewithnarendra/features/skills/data/models/skill_model.dart';
-
 import '../datasources/skill_remote_datasource.dart';
 import '../../domain/repositories/skill_repository.dart';
-import '../../domain/entities/skill_entity.dart';
 
 class SkillRepositoryImpl implements SkillRepository {
   final SkillRemoteDataSource _remoteDataSource;
@@ -10,64 +7,63 @@ class SkillRepositoryImpl implements SkillRepository {
   SkillRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<List<SkillEntity>> getSkills() async {
+  Future<Map<String, dynamic>> getAllSkills() async {
     try {
-      final skillModels = await _remoteDataSource.getSkills();
-      return skillModels.map((model) => model.toEntity()).toList();
+      return await _remoteDataSource.getAllSkills();
     } catch (e) {
       throw Exception('Failed to get skills: ${e.toString()}');
     }
   }
 
   @override
-  Future<SkillEntity?> getSkillById(String id) async {
+  Future<Map<String, dynamic>> getFeaturedSkills() async {
     try {
-      final skillModel = await _remoteDataSource.getSkillById(id);
-      return skillModel?.toEntity();
+      return await _remoteDataSource.getFeaturedSkills();
     } catch (e) {
-      throw Exception('Failed to get skill by id: ${e.toString()}');
+      throw Exception('Failed to get featured skills: ${e.toString()}');
     }
   }
 
   @override
-  Future<SkillEntity> createSkill(SkillEntity skill) async {
+  Future<Map<String, dynamic>> getSkillsByCategory(String category) async {
     try {
-      final skillModel = SkillModel(
-        id: skill.id,
-        name: skill.name,
-        level: skill.level,
-        category: skill.category,
-        yearsOfExperience: skill.yearsOfExperience,
-        description: skill.description,
-        icon: skill.icon,
-        sortOrder: skill.sortOrder,
-        createdAt: skill.createdAt,
-        updatedAt: skill.updatedAt,
-      );
-      final createdModel = await _remoteDataSource.createSkill(skillModel);
-      return createdModel.toEntity();
+      return await _remoteDataSource.getSkillsByCategory(category);
+    } catch (e) {
+      throw Exception('Failed to get skills by category: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getSkillsByLevel(String level) async {
+    try {
+      return await _remoteDataSource.getSkillsByLevel(level);
+    } catch (e) {
+      throw Exception('Failed to get skills by level: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getSkillById(String id) async {
+    try {
+      return await _remoteDataSource.getSkillById(id);
+    } catch (e) {
+      throw Exception('Failed to get skill: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createSkill(Map<String, dynamic> data) async {
+    try {
+      return await _remoteDataSource.createSkill(data);
     } catch (e) {
       throw Exception('Failed to create skill: ${e.toString()}');
     }
   }
 
   @override
-  Future<SkillEntity> updateSkill(SkillEntity skill) async {
+  Future<Map<String, dynamic>> updateSkill(String id, Map<String, dynamic> data) async {
     try {
-      final skillModel = SkillModel(
-        id: skill.id,
-        name: skill.name,
-        level: skill.level,
-        category: skill.category,
-        yearsOfExperience: skill.yearsOfExperience,
-        description: skill.description,
-        icon: skill.icon,
-        sortOrder: skill.sortOrder,
-        createdAt: skill.createdAt,
-        updatedAt: skill.updatedAt,
-      );
-      final updatedModel = await _remoteDataSource.updateSkill(skillModel);
-      return updatedModel.toEntity();
+      return await _remoteDataSource.updateSkill(id, data);
     } catch (e) {
       throw Exception('Failed to update skill: ${e.toString()}');
     }
@@ -79,36 +75,6 @@ class SkillRepositoryImpl implements SkillRepository {
       await _remoteDataSource.deleteSkill(id);
     } catch (e) {
       throw Exception('Failed to delete skill: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<SkillEntity>> getSkillsByCategory(String category) async {
-    try {
-      final skillModels = await _remoteDataSource.getSkillsByCategory(category);
-      return skillModels.map((model) => model.toEntity()).toList();
-    } catch (e) {
-      throw Exception('Failed to get skills by category: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<SkillEntity>> getSkillsByLevel(String level) async {
-    try {
-      final skillModels = await _remoteDataSource.getSkillsByLevel(level);
-      return skillModels.map((model) => model.toEntity()).toList();
-    } catch (e) {
-      throw Exception('Failed to get skills by level: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<SkillEntity>> searchSkills(String query) async {
-    try {
-      final skillModels = await _remoteDataSource.searchSkills(query);
-      return skillModels.map((model) => model.toEntity()).toList();
-    } catch (e) {
-      throw Exception('Failed to search skills: ${e.toString()}');
     }
   }
 }

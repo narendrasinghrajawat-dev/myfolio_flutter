@@ -1,14 +1,9 @@
-import '../entities/project_entity.dart';
-
 abstract class ProjectRepository {
-  Future<List<ProjectEntity>> getProjects({int page = 1, int limit = 10});
-  Future<ProjectEntity?> getProjectById(String id);
-  Future<ProjectEntity> createProject(ProjectEntity project);
-  Future<ProjectEntity> updateProject(ProjectEntity project);
+  Future<Map<String, dynamic>> getAllProjects();
+  Future<Map<String, dynamic>> getFeaturedProjects();
+  Future<Map<String, dynamic>> searchProjects(String query);
+  Future<Map<String, dynamic>> getProjectById(String id);
+  Future<Map<String, dynamic>> createProject(Map<String, dynamic> data);
+  Future<Map<String, dynamic>> updateProject(String id, Map<String, dynamic> data);
   Future<void> deleteProject(String id);
-  Future<List<ProjectEntity>> getFeaturedProjects();
-  Future<List<ProjectEntity>> searchProjects(String query);
-  Future<List<ProjectEntity>> getProjectsByCategory(String category);
-  Future<String> uploadProjectImage(String projectId, String imagePath);
-  Future<void> deleteProjectImage(String projectId, String imageUrl);
 }

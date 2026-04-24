@@ -1,4 +1,3 @@
-import '../entities/about_entity.dart';
 import '../repositories/about_repository.dart';
 
 class UpdateAboutUseCase {
@@ -6,13 +5,13 @@ class UpdateAboutUseCase {
 
   UpdateAboutUseCase(this._repository);
 
-  Future<AboutEntity> call(AboutEntity about) async {
-    if (about.title.isEmpty) {
+  Future<Map<String, dynamic>> call(String id, Map<String, dynamic> data) async {
+    if (data['title'] == null || data['title'].toString().isEmpty) {
       throw Exception('Title is required');
     }
-    if (about.description.isEmpty) {
+    if (data['description'] == null || data['description'].toString().isEmpty) {
       throw Exception('Description is required');
     }
-    return await _repository.updateAbout(about);
+    return await _repository.updateAbout(id, data);
   }
 }

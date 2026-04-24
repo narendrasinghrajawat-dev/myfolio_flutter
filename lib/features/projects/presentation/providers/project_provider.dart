@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/datasources/project_remote_datasource.dart';
 import '../../data/repositories/project_repository_impl.dart';
+import '../../data/services/project_api_service.dart';
 import '../../domain/repositories/project_repository.dart';
 import '../../domain/usecases/get_projects_usecase.dart';
 import '../../domain/usecases/create_project_usecase.dart';
@@ -8,10 +9,18 @@ import '../../domain/usecases/update_project_usecase.dart';
 import '../../domain/usecases/delete_project_usecase.dart';
 import 'project_notifier.dart';
 import 'project_state.dart';
+import '../../../../core/services/network_service.dart';
+
+// API Service Provider
+final projectApiServiceProvider = Provider<ProjectApiService>((ref) {
+  final networkService = ref.watch(networkServiceProvider);
+  return ProjectApiService(networkService);
+});
 
 // Remote Data Source Provider
 final projectRemoteDataSourceProvider = Provider<ProjectRemoteDataSource>((ref) {
-  return ProjectRemoteDataSourceImpl(null);
+  final projectApiService = ref.watch(projectApiServiceProvider);
+  return ProjectRemoteDataSourceImpl(projectApiService);
 });
 
 // Repository Provider

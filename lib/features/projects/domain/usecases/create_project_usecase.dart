@@ -1,4 +1,3 @@
-import '../entities/project_entity.dart';
 import '../repositories/project_repository.dart';
 
 class CreateProjectUseCase {
@@ -6,16 +5,13 @@ class CreateProjectUseCase {
 
   CreateProjectUseCase(this._repository);
 
-  Future<ProjectEntity> call(ProjectEntity project) async {
-    if (project.title.isEmpty) {
+  Future<Map<String, dynamic>> call(Map<String, dynamic> data) async {
+    if (data['title'] == null || data['title'].toString().isEmpty) {
       throw Exception('Project title is required');
     }
-    if (project.description.isEmpty) {
+    if (data['description'] == null || data['description'].toString().isEmpty) {
       throw Exception('Project description is required');
     }
-    if (project.projectUrl.isEmpty) {
-      throw Exception('Project URL is required');
-    }
-    return await _repository.createProject(project);
+    return await _repository.createProject(data);
   }
 }

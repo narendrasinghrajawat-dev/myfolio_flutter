@@ -1,4 +1,3 @@
-import '../entities/skill_entity.dart';
 import '../repositories/skill_repository.dart';
 
 class GetSkillsUseCase {
@@ -6,7 +5,7 @@ class GetSkillsUseCase {
 
   GetSkillsUseCase(this._repository);
 
-  Future<List<SkillEntity>> call() async {
-    return await _repository.getSkills();
+  Future<Map<String, dynamic>> call() async {
+    return await _repository.getAllSkills();
   }
 }

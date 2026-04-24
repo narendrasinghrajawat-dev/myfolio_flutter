@@ -1,6 +1,6 @@
 class AppConstants {
   // API
-  static const String apiBaseUrl = 'https://api.myfolio.com/api/v1';
+  static const String apiBaseUrl = 'http://localhost:3000/api';
   static const String apiTimeout = '30000';
   
   // Storage Keys

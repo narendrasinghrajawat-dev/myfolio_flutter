@@ -1,67 +1,60 @@
-import '../models/about_model.dart';
+import '../services/about_api_service.dart';
 
 abstract class AboutRemoteDataSource {
-  Future<AboutModel?> getAbout();
-  Future<AboutModel> updateAbout(AboutModel about);
-  Future<AboutModel> updateAboutField(String field, dynamic value);
-  Future<String?> uploadResume(String filePath);
-  Future<void> deleteResume();
+  Future<Map<String, dynamic>> getAllAbout();
+  Future<Map<String, dynamic>> getAboutById(String id);
+  Future<Map<String, dynamic>> createAbout(Map<String, dynamic> data);
+  Future<Map<String, dynamic>> updateAbout(String id, Map<String, dynamic> data);
+  Future<void> deleteAbout(String id);
 }
 
 class AboutRemoteDataSourceImpl implements AboutRemoteDataSource {
-  final dynamic _httpClient;
+  final AboutApiService _aboutApiService;
 
-  AboutRemoteDataSourceImpl(this._httpClient);
+  AboutRemoteDataSourceImpl(this._aboutApiService);
 
   @override
-  Future<AboutModel?> getAbout() async {
+  Future<Map<String, dynamic>> getAllAbout() async {
     try {
-      final response = await _httpClient.get('/about');
-      return AboutModel.fromJson(response.data['data']);
+      return await _aboutApiService.getAllAbout();
     } catch (e) {
       throw Exception('Failed to get about: ${e.toString()}');
     }
   }
 
   @override
-  Future<AboutModel> updateAbout(AboutModel about) async {
+  Future<Map<String, dynamic>> getAboutById(String id) async {
     try {
-      final response = await _httpClient.put('/about', data: about.toJson());
-      return AboutModel.fromJson(response.data['data']);
+      return await _aboutApiService.getAboutById(id);
+    } catch (e) {
+      throw Exception('Failed to get about: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createAbout(Map<String, dynamic> data) async {
+    try {
+      return await _aboutApiService.createAbout(data);
+    } catch (e) {
+      throw Exception('Failed to create about: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateAbout(String id, Map<String, dynamic> data) async {
+    try {
+      return await _aboutApiService.updateAbout(id, data);
     } catch (e) {
       throw Exception('Failed to update about: ${e.toString()}');
     }
   }
 
   @override
-  Future<AboutModel> updateAboutField(String field, dynamic value) async {
+  Future<void> deleteAbout(String id) async {
     try {
-      final response = await _httpClient.patch('/about/field', data: {
-        'field': field,
-        'value': value,
-      });
-      return AboutModel.fromJson(response.data['data']);
+      await _aboutApiService.deleteAbout(id);
     } catch (e) {
-      throw Exception('Failed to update about field: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<String?> uploadResume(String filePath) async {
-    try {
-      // TODO: Implement file upload logic
-      return null;
-    } catch (e) {
-      throw Exception('Failed to upload resume: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<void> deleteResume() async {
-    try {
-      await _httpClient.delete('/about/resume');
-    } catch (e) {
-      throw Exception('Failed to delete resume: ${e.toString()}');
+      throw Exception('Failed to delete about: ${e.toString()}');
     }
   }
 }

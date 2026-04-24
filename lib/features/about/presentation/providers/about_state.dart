@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/about_entity.dart';
 
 enum AboutStatus {
   initial,
@@ -10,7 +9,7 @@ enum AboutStatus {
 
 class AboutState extends Equatable {
   final AboutStatus status;
-  final AboutEntity? about;
+  final Map<String, dynamic>? about;
   final String? errorMessage;
 
   const AboutState({
@@ -21,7 +20,7 @@ class AboutState extends Equatable {
 
   AboutState copyWith({
     AboutStatus? status,
-    AboutEntity? about,
+    Map<String, dynamic>? about,
     String? errorMessage,
   }) {
     return AboutState(

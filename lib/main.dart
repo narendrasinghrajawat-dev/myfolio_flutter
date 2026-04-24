@@ -128,7 +128,7 @@ class PortfolioScreen extends ConsumerWidget {
         child: Column(
           children: [
             const Text(
-              'Welcome to MyFolio',
+              'Welcome to CodeWithNarendra',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,

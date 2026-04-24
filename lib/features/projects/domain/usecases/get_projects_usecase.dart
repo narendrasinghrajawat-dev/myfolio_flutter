@@ -1,4 +1,3 @@
-import '../entities/project_entity.dart';
 import '../repositories/project_repository.dart';
 
 class GetProjectsUseCase {
@@ -6,7 +5,7 @@ class GetProjectsUseCase {
 
   GetProjectsUseCase(this._repository);
 
-  Future<List<ProjectEntity>> call({int page = 1, int limit = 10}) async {
-    return await _repository.getProjects(page: page, limit: limit);
+  Future<Map<String, dynamic>> call() async {
+    return await _repository.getAllProjects();
   }
 }

@@ -1,13 +1,12 @@
-import '../entities/user_entity.dart';
-
 abstract class AuthRepository {
-  Future<UserEntity?> signInWithEmail(String email, String password);
-  Future<UserEntity?> registerWithEmail(String email, String password, String? displayName);
+  Future<Map<String, dynamic>> signInWithEmail(String email, String password);
+  Future<Map<String, dynamic>> registerWithEmail(String email, String password, String firstName, String lastName, String displayName);
   Future<void> signOut();
   Future<void> resetPassword(String email);
-  Future<UserEntity?> getCurrentUser();
-  Future<void> sendEmailVerification();
-  Future<bool> isEmailVerified();
-  Future<String?> getIdToken();
-  Future<void> updateProfile({String? displayName, String? photoURL});
+  Future<Map<String, dynamic>> getCurrentUser();
+  Future<void> sendEmailVerification(String token);
+  Future<void> forgotPassword(String email);
+  Future<void> resetPasswordWithToken(String token, String newPassword);
+  Future<void> changePassword(String currentPassword, String newPassword);
+  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data);
 }

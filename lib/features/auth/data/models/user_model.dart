@@ -1,43 +1,44 @@
-import '../../domain/entities/user_entity.dart';
+class UserModel {
+  final String? id;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
+  final String? displayName;
+  final String? role;
+  final bool? isVerified;
+  final bool? isActive;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-class UserModel extends UserEntity {
   const UserModel({
-    super.id,
-    super.email,
-    super.displayName,
-    super.photoURL,
-    super.emailVerified,
-    super.createdAt,
-    super.lastLoginAt,
-    super.isAdmin,
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.displayName,
+    this.role,
+    this.isVerified,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
   });
-
-  factory UserModel.fromFirebaseUser(user) {
-    return UserModel(
-      id: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
-      createdAt: user.metadata.creationTime,
-      lastLoginAt: user.metadata.lastSignInTime,
-    );
-  }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String?,
+      id: map['_id'] as String? ?? map['id'] as String?,
       email: map['email'] as String?,
+      firstName: map['firstName'] as String?,
+      lastName: map['lastName'] as String?,
       displayName: map['displayName'] as String?,
-      photoURL: map['photoURL'] as String?,
-      emailVerified: map['emailVerified'] as bool? ?? false,
-      createdAt: map['createdAt'] != null 
+      role: map['role'] as String?,
+      isVerified: map['isVerified'] as bool?,
+      isActive: map['isActive'] as bool?,
+      createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'] as String)
           : null,
-      lastLoginAt: map['lastLoginAt'] != null
-          ? DateTime.parse(map['lastLoginAt'] as String)
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'] as String)
           : null,
-      isAdmin: map['isAdmin'] as bool?,
     );
   }
 
@@ -45,25 +46,17 @@ class UserModel extends UserEntity {
     return {
       'id': id,
       'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
       'displayName': displayName,
-      'photoURL': photoURL,
-      'emailVerified': emailVerified,
+      'role': role,
+      'isVerified': isVerified,
+      'isActive': isActive,
       'createdAt': createdAt?.toIso8601String(),
-      'lastLoginAt': lastLoginAt?.toIso8601String(),
-      'isAdmin': isAdmin,
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
-  UserEntity toEntity() {
-    return UserEntity(
-      id: id,
-      email: email,
-      displayName: displayName,
-      photoURL: photoURL,
-      emailVerified: emailVerified,
-      createdAt: createdAt,
-      lastLoginAt: lastLoginAt,
-      isAdmin: isAdmin,
-    );
-  }
+  bool get isUserAdmin => role == '2';
+  bool get isUser => role == '1';
 }

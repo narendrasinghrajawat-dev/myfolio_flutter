@@ -1,4 +1,3 @@
-import '../entities/education_entity.dart';
 import '../repositories/education_repository.dart';
 
 class UpdateEducationUseCase {
@@ -6,19 +5,19 @@ class UpdateEducationUseCase {
 
   UpdateEducationUseCase(this._repository);
 
-  Future<EducationEntity> call(EducationEntity education) async {
-    if (education.id.isEmpty) {
+  Future<Map<String, dynamic>> call(String id, Map<String, dynamic> data) async {
+    if (id.isEmpty) {
       throw Exception('Education ID is required');
     }
-    if (education.institution.isEmpty) {
+    if (data['institution'] == null || data['institution'].toString().isEmpty) {
       throw Exception('Institution is required');
     }
-    if (education.degree.isEmpty) {
+    if (data['degree'] == null || data['degree'].toString().isEmpty) {
       throw Exception('Degree is required');
     }
-    if (education.field.isEmpty) {
+    if (data['field'] == null || data['field'].toString().isEmpty) {
       throw Exception('Field of study is required');
     }
-    return await _repository.updateEducation(education);
+    return await _repository.updateEducation(id, data);
   }
 }

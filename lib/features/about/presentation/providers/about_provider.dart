@@ -1,16 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/datasources/about_remote_datasource.dart';
 import '../../data/repositories/about_repository_impl.dart';
+import '../../data/services/about_api_service.dart';
 import '../../domain/repositories/about_repository.dart';
 import '../../domain/usecases/get_about_usecase.dart';
 import '../../domain/usecases/update_about_usecase.dart';
 import 'about_notifier.dart';
 import 'about_state.dart';
+import '../../../../core/services/network_service.dart';
+
+// API Service Provider
+final aboutApiServiceProvider = Provider<AboutApiService>((ref) {
+  final networkService = ref.watch(networkServiceProvider);
+  return AboutApiService(networkService);
+});
 
 // Remote Data Source Provider
 final aboutRemoteDataSourceProvider = Provider<AboutRemoteDataSource>((ref) {
-  // TODO: Inject proper HTTP client
-  return AboutRemoteDataSourceImpl(null);
+  final aboutApiService = ref.watch(aboutApiServiceProvider);
+  return AboutRemoteDataSourceImpl(aboutApiService);
 });
 
 // Repository Provider

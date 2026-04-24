@@ -1,58 +1,79 @@
-import '../models/skill_model.dart';
+import '../services/skill_api_service.dart';
 
 abstract class SkillRemoteDataSource {
-  Future<List<SkillModel>> getSkills();
-  Future<SkillModel?> getSkillById(String id);
-  Future<SkillModel> createSkill(SkillModel skill);
-  Future<SkillModel> updateSkill(SkillModel skill);
+  Future<Map<String, dynamic>> getAllSkills();
+  Future<Map<String, dynamic>> getFeaturedSkills();
+  Future<Map<String, dynamic>> getSkillsByCategory(String category);
+  Future<Map<String, dynamic>> getSkillsByLevel(String level);
+  Future<Map<String, dynamic>> getSkillById(String id);
+  Future<Map<String, dynamic>> createSkill(Map<String, dynamic> data);
+  Future<Map<String, dynamic>> updateSkill(String id, Map<String, dynamic> data);
   Future<void> deleteSkill(String id);
-  Future<List<SkillModel>> getSkillsByCategory(String category);
-  Future<List<SkillModel>> getSkillsByLevel(String level);
-  Future<List<SkillModel>> searchSkills(String query);
 }
 
 class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
-  final dynamic _httpClient;
+  final SkillApiService _skillApiService;
 
-  SkillRemoteDataSourceImpl(this._httpClient);
+  SkillRemoteDataSourceImpl(this._skillApiService);
 
   @override
-  Future<List<SkillModel>> getSkills() async {
+  Future<Map<String, dynamic>> getAllSkills() async {
     try {
-      final response = await _httpClient.get('/skills');
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => SkillModel.fromJson(json))
-          .toList();
+      return await _skillApiService.getAllSkills();
     } catch (e) {
       throw Exception('Failed to get skills: ${e.toString()}');
     }
   }
 
   @override
-  Future<SkillModel?> getSkillById(String id) async {
+  Future<Map<String, dynamic>> getFeaturedSkills() async {
     try {
-      final response = await _httpClient.get('/skills/$id');
-      return SkillModel.fromJson(response.data['data']);
+      return await _skillApiService.getFeaturedSkills();
     } catch (e) {
-      throw Exception('Failed to get skill by id: ${e.toString()}');
+      throw Exception('Failed to get featured skills: ${e.toString()}');
     }
   }
 
   @override
-  Future<SkillModel> createSkill(SkillModel skill) async {
+  Future<Map<String, dynamic>> getSkillsByCategory(String category) async {
     try {
-      final response = await _httpClient.post('/skills', data: skill.toJson());
-      return SkillModel.fromJson(response.data['data']);
+      return await _skillApiService.getSkillsByCategory(category);
+    } catch (e) {
+      throw Exception('Failed to get skills by category: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getSkillsByLevel(String level) async {
+    try {
+      return await _skillApiService.getSkillsByLevel(level);
+    } catch (e) {
+      throw Exception('Failed to get skills by level: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getSkillById(String id) async {
+    try {
+      return await _skillApiService.getSkillById(id);
+    } catch (e) {
+      throw Exception('Failed to get skill: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createSkill(Map<String, dynamic> data) async {
+    try {
+      return await _skillApiService.createSkill(data);
     } catch (e) {
       throw Exception('Failed to create skill: ${e.toString()}');
     }
   }
 
   @override
-  Future<SkillModel> updateSkill(SkillModel skill) async {
+  Future<Map<String, dynamic>> updateSkill(String id, Map<String, dynamic> data) async {
     try {
-      final response = await _httpClient.put('/skills/${skill.id}', data: skill.toJson());
-      return SkillModel.fromJson(response.data['data']);
+      return await _skillApiService.updateSkill(id, data);
     } catch (e) {
       throw Exception('Failed to update skill: ${e.toString()}');
     }
@@ -61,47 +82,9 @@ class SkillRemoteDataSourceImpl implements SkillRemoteDataSource {
   @override
   Future<void> deleteSkill(String id) async {
     try {
-      await _httpClient.delete('/skills/$id');
+      await _skillApiService.deleteSkill(id);
     } catch (e) {
       throw Exception('Failed to delete skill: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<SkillModel>> getSkillsByCategory(String category) async {
-    try {
-      final response = await _httpClient.get('/skills/category/$category');
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => SkillModel.fromJson(json))
-          .toList();
-    } catch (e) {
-      throw Exception('Failed to get skills by category: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<SkillModel>> getSkillsByLevel(String level) async {
-    try {
-      final response = await _httpClient.get('/skills/level/$level');
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => SkillModel.fromJson(json))
-          .toList();
-    } catch (e) {
-      throw Exception('Failed to get skills by level: ${e.toString()}');
-    }
-  }
-
-  @override
-  Future<List<SkillModel>> searchSkills(String query) async {
-    try {
-      final response = await _httpClient.get('/skills/search', queryParameters: {
-        'q': query,
-      });
-      return (response.data['data'] as List<dynamic>)
-          .map((json) => SkillModel.fromJson(json))
-          .toList();
-    } catch (e) {
-      throw Exception('Failed to search skills: ${e.toString()}');
     }
   }
 }

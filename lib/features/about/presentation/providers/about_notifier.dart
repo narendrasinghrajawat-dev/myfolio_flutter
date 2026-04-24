@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/about_entity.dart';
 import '../../domain/usecases/get_about_usecase.dart';
 import '../../domain/usecases/update_about_usecase.dart';
 import 'about_state.dart';
@@ -32,11 +31,11 @@ class AboutNotifier extends StateNotifier<AboutState> {
     }
   }
 
-  Future<void> updateAbout(AboutEntity about) async {
+  Future<void> updateAbout(String id, Map<String, dynamic> data) async {
     state = state.copyWith(status: AboutStatus.loading);
     
     try {
-      final updatedAbout = await _updateAboutUseCase(about);
+      final updatedAbout = await _updateAboutUseCase(id, data);
       state = state.copyWith(
         status: AboutStatus.loaded,
         about: updatedAbout,

@@ -1,4 +1,3 @@
-import '../entities/education_entity.dart';
 import '../repositories/education_repository.dart';
 
 class GetEducationUseCase {
@@ -6,7 +5,7 @@ class GetEducationUseCase {
 
   GetEducationUseCase(this._repository);
 
-  Future<List<EducationEntity>> call() async {
-    return await _repository.getEducation();
+  Future<Map<String, dynamic>> call() async {
+    return await _repository.getAllEducation();
   }
 }
