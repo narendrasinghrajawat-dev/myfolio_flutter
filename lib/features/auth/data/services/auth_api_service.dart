@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/network_service.dart';
 import '../../../../core/exceptions/app_exceptions.dart';
+import '../../../../core/constants/api_endpoints.dart';
 
 /// Auth API service for making authentication-related API calls
 class AuthApiService {
@@ -15,7 +16,7 @@ class AuthApiService {
   }) async {
     try {
       final response = await _networkService.post<Map<String, dynamic>>(
-        '/auth/login',
+        ApiEndpoints.login,
         data: {
           'email': email,
           'password': password,
@@ -36,7 +37,7 @@ class AuthApiService {
   }) async {
     try {
       final response = await _networkService.post<Map<String, dynamic>>(
-        '/auth/register',
+        ApiEndpoints.register,
         data: {
           'email': email,
           'password': password,
@@ -54,7 +55,7 @@ class AuthApiService {
   Future<void> logout() async {
     try {
       await _networkService.post<void>(
-        '/auth/logout',
+        ApiEndpoints.logout,
       );
     } catch (e) {
       throw _handleAuthError(e);
@@ -65,7 +66,7 @@ class AuthApiService {
   Future<Map<String, dynamic>> getCurrentUser() async {
     try {
       final response = await _networkService.get<Map<String, dynamic>>(
-        '/auth/me',
+        ApiEndpoints.getCurrentUser,
       );
       return response as Map<String, dynamic>;
     } catch (e) {
@@ -77,7 +78,7 @@ class AuthApiService {
   Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data) async {
     try {
       final response = await _networkService.put<Map<String, dynamic>>(
-        '/auth/me',
+        ApiEndpoints.updateProfile,
         data: data,
       );
       return response as Map<String, dynamic>;
@@ -93,7 +94,7 @@ class AuthApiService {
   }) async {
     try {
       await _networkService.post<void>(
-        '/auth/change-password',
+        ApiEndpoints.changePassword,
         data: {
           'currentPassword': currentPassword,
           'newPassword': newPassword,
@@ -108,7 +109,7 @@ class AuthApiService {
   Future<void> forgotPassword(String email) async {
     try {
       await _networkService.post<void>(
-        '/auth/forgot-password',
+        ApiEndpoints.forgotPassword,
         data: {'email': email},
       );
     } catch (e) {
@@ -123,7 +124,7 @@ class AuthApiService {
   }) async {
     try {
       await _networkService.post<void>(
-        '/auth/reset-password',
+        ApiEndpoints.resetPassword,
         data: {
           'token': token,
           'password': newPassword,
@@ -138,7 +139,7 @@ class AuthApiService {
   Future<void> verifyEmail(String token) async {
     try {
       await _networkService.post<void>(
-        '/auth/verify-email',
+        ApiEndpoints.verifyEmail,
         data: {'token': token},
       );
     } catch (e) {

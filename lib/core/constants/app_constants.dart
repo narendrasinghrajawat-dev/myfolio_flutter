@@ -11,7 +11,7 @@ class AppConstants {
   static const String languageKey = 'language_code';
   
   // App Info
-  static const String appName = 'MyFolio';
+  static const String appName = 'CodeWithNarendra';
   static const String appVersion = '1.0.0';
   
   // Validation

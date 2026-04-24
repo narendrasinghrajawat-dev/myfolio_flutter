@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../constants/app_constants.dart';
+import '../config/env_config.dart';
 import '../exceptions/app_exceptions.dart';
 
 class NetworkService {
@@ -9,7 +9,7 @@ class NetworkService {
   
   NetworkService() {
     _dio = Dio(BaseOptions(
-      baseUrl: AppConstants.apiBaseUrl,
+      baseUrl: 'http://localhost:3000/api', // Default, will be updated by EnvConfig
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
@@ -20,6 +20,18 @@ class NetworkService {
     ));
     
     _setupInterceptors();
+    _updateBaseUrlFromEnv();
+  }
+  
+  void _updateBaseUrlFromEnv() {
+    try {
+      _dio.options.baseUrl = EnvConfig.apiBaseUrl;
+      _dio.options.connectTimeout = Duration(milliseconds: EnvConfig.apiTimeout);
+      _dio.options.receiveTimeout = Duration(milliseconds: EnvConfig.apiTimeout);
+      _dio.options.sendTimeout = Duration(milliseconds: EnvConfig.apiTimeout);
+    } catch (e) {
+      print('Error updating base URL from env: $e');
+    }
   }
   
   void _setupInterceptors() {
@@ -112,6 +124,10 @@ class NetworkService {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
+
+    print('GET called: $path');
+
+
     try {
       return await _dio.get<T>(
         path,
@@ -129,6 +145,8 @@ class NetworkService {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
+    print('POST called: $path');
+    
     try {
       return await _dio.post<T>(
         path,
@@ -138,7 +156,7 @@ class NetworkService {
       );
     } on DioException catch (e) {
       throw _handleError(e);
-    }
+    } 
   }
   
   Future<Response<T>> put<T>(

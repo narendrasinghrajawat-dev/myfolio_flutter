@@ -77,16 +77,16 @@ String getLocalizedString(String key, AppLanguage language) {
     case 'appName':
       switch (language) {
         case AppLanguage.en:
-          return 'MyFolio';
+          return 'CodeWithNarendra';
         case AppLanguage.hi:
-          return 'मेरा पोर्टफोलियो';
+          return 'कोडविथनरेंद्र';
       }
     case 'welcomeMessage':
       switch (language) {
         case AppLanguage.en:
-          return 'Welcome to MyFolio';
+          return 'Welcome to CodeWithNarendra';
         case AppLanguage.hi:
-          return 'मेरा पोर्टफोलियो में आपका स्वागत है';
+          return 'कोडविथनरेंद्र में आपका स्वागत है';
       }
     case 'signIn':
       switch (language) {

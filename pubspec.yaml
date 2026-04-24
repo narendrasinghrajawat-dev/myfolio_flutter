@@ -54,6 +54,7 @@ dependencies:
   freezed_annotation: ^2.4.4
   logger: ^2.4.0
   form_validator: ^2.1.1
+  flutter_dotenv: ^5.1.0
   
   # Localization
   flutter_localizations:
@@ -80,15 +81,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
   
   assets:
     - assets/images/
     - assets/icons/
     - assets/l10n/
-
-flutter_intl:
-  enabled: true
-  arb_dir: lib/l10n
-  output_dir: lib/generated
-  output_localization_file: app_localizations.dart
-  template_arb_file: app_en.arb

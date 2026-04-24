@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../core/widgets/common_text.dart';
 import '../../../../core/widgets/common_text_field.dart';
 import '../../../../core/widgets/common_button.dart';
 import '../../../../core/widgets/responsive_layout.dart';
 import '../../../../core/config/app_theme_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../controllers/auth_controller.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -73,15 +73,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         CommonText.veryLarge(
-          AppStrings.authWelcome,
+          l10n.authWelcome,
           fontWeight: FontWeight.bold,
         ),
         const ResponsiveSpacing(mobile: AppSizes.spacingSM),
         CommonText.small(
-          AppStrings.appName,
+          l10n.appName,
           color: AppThemeColors.grey600,
         ),
       ],
@@ -89,18 +90,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildEmailField() {
+    final l10n = AppLocalizations.of(context)!;
     return CommonTextField(
       controller: _emailController,
-      labelText: AppStrings.authEmail,
+      labelText: l10n.authEmail,
       hintText: 'Enter your email',
       prefixIcon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'This field is required';
+          return l10n.fieldRequired;
         }
         if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-          return 'Invalid email address';
+          return l10n.fieldInvalidEmail;
         }
         return null;
       },
@@ -108,9 +110,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildPasswordField() {
+    final l10n = AppLocalizations.of(context)!;
     return CommonTextField(
       controller: _passwordController,
-      labelText: AppStrings.authPassword,
+      labelText: l10n.authPassword,
       hintText: 'Enter your password',
       prefixIcon: Icons.lock_outline,
       suffixIcon: _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -122,10 +125,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       obscureText: _obscurePassword,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'This field is required';
+          return l10n.fieldRequired;
         }
         if (value.length < 8) {
-          return 'Password must be at least 8 characters';
+          return l10n.fieldInvalidPassword;
         }
         return null;
       },
@@ -133,6 +136,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildForgotPasswordLink() {
+    final l10n = AppLocalizations.of(context)!;
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
@@ -140,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           // TODO: Implement forgot password
         },
         child: CommonText.small(
-          'Forgot Password?',
+          l10n.authForgotPassword,
           color: AppThemeColors.primary,
         ),
       ),
@@ -148,8 +152,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildLoginButton(dynamic authState) {
+    final l10n = AppLocalizations.of(context)!;
     return CommonButton(
-      text: AppStrings.authLogin,
+      text: l10n.authLogin,
       onPressed: authState.isLoading ? null : _handleSubmit,
       isLoading: authState.isLoading,
       type: CommonButtonType.primary,
@@ -158,18 +163,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildRegisterLink() {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CommonText.small(
-          "Don't have an account?",
+          l10n.authAlreadyHaveAccount,
         ),
         TextButton(
           onPressed: () {
             // TODO: Navigate to register
           },
           child: CommonText.small(
-            AppStrings.authRegister,
+            l10n.authRegister,
             color: AppThemeColors.primary,
             fontWeight: FontWeight.w600,
           ),

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/providers/language_provider.dart';
+import 'core/config/env_config.dart';
 import 'features/auth/presentation/controllers/auth_controller.dart';
 import 'features/auth/presentation/pages/login_screen.dart';
 import 'features/admin/presentation/pages/admin_login_screen.dart';
@@ -17,6 +20,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize environment configuration
+  await EnvConfig.init();
   
   // Initialize Firebase (optional - can be removed if using JWT auth)
   try {
@@ -38,9 +44,14 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(languageProvider);
+    
     return MaterialApp.router(
-      title: 'MyFolio',
+      title: 'CodeWithNarendra',
       debugShowCheckedModeBanner: false,
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: GoRouter(
         navigatorKey: navigatorKey,
         initialLocation: '/login',
@@ -100,7 +111,7 @@ class PortfolioScreen extends ConsumerWidget {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MyFolio'),
+        title: const Text('CodeWithNarendra'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [

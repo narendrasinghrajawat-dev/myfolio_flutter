@@ -1,6 +1,6 @@
 abstract final class AppStrings {
   // App Information
-  static const String appName = 'MyFolio';
+  static const String appName = 'CodeWithNarendra';
   static const String appVersion = '1.0.0';
   static const String appDescription = 'Professional Portfolio Application';
 
@@ -9,7 +9,7 @@ abstract final class AppStrings {
   static const String navPortfolio = 'Portfolio';
   static const String navProjects = 'Projects';
   static const String navSkills = 'Skills';
-  static const String navEducation = 'Education';
+  static const String navEducation = 'Education'; 
   static const String navAbout = 'About';
   static const String navContact = 'Contact';
   static const String navSettings = 'Settings';
